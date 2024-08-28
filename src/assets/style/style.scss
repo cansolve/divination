@@ -153,14 +153,13 @@ img {
 			}
 
 			.user__reviews {
-				.van-swipe {
-					height: 560px;
+				.swiper__warp {
+					height: 590px;
+					overflow: hidden;
+					.swiper-slide {
+						height: auto !important;
+					}
 				}
-
-				.van-swipe-item {
-					height: auto;
-				}
-
 				.swiper__item {
 					.swiper__hd {
 						display: flex;
@@ -185,19 +184,23 @@ img {
 									display: inline-block;
 									width: 40px;
 									height: 40px;
+									margin: 0 3px;
 									background: url("../img/star.png") no-repeat center;
-									background-size: contain;
+									background-size: cover;
 								}
 							}
 						}
 					}
 
 					.swiper__bd {
-						padding-top: 20px;
-						padding-bottom: 30px;
+						padding-top: 15px;
 						box-sizing: border-box;
+						font-size: 38px;
 					}
 				}
+			}
+			.van-swipe__indicators--vertical {
+				display: none;
 			}
 		}
 	}
@@ -375,23 +378,27 @@ img {
 	.banner {
 		width: 1080px;
 		height: 798px;
-		background: url("../img/detail-banner.jpg") no-repeat center;
-		background-size: 100% 100%;
+		img {
+			width: 100%;
+			height: 100%;
+		}
 	}
 
 	.page__title {
+		position: relative;
+		z-index: 2;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		width: 560px;
 		height: 120px;
-		background: url("../img/title-bg.png") no-repeat center;
-		background-size: 100% 100%;
 		margin: -35px auto 0;
-		font-family: "行楷-繁";
-		font-weight: bold;
 		font-size: 60px;
 		color: #fff;
+		background: url("../img/title-bg.png") no-repeat center;
+		background-size: 100% 100%;
+		font-family: "行楷-繁";
+		font-weight: bold;
 	}
 
 	.detail__wrap {
@@ -619,7 +626,9 @@ img {
 			}
 			.old__price {
 				margin-top: 10px;
+				font-size: 60px;
 				&.through {
+					font-size: 40px;
 					text-decoration: line-through;
 				}
 			}

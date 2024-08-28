@@ -1,6 +1,8 @@
 <template>
-	<div class="detail__page">
-		<div class="banner"></div>
+	<div class="detail__page" id="pdf-content">
+		<div class="banner">
+			<img src="../assets/img/detail-banner.jpg" alt="" />
+		</div>
 		<div class="page__title">
 			<span class="title__txt">单身寻找姻缘</span>
 		</div>
@@ -57,17 +59,52 @@
 	import { onMounted } from "vue";
 	import { usePageEntryTime } from "../utils/pageEntryTime"; // 引入页面时间钩子函数
 
+	import html2canvas from "html2canvas";
+	import jsPDF from "jspdf";
+
 	export default {
 		name: "DetailPage",
 		setup() {
 			const { entryTime } = usePageEntryTime(); //调用页面进入时间
 
+			const generatePDF = () => {
+				const element = document.getElementById("pdf-content");
+
+				html2canvas(element, { scale: 2, dpi: 300 }).then((canvas) => {
+					const imgData = canvas.toDataURL("image/png");
+					const pdf = new jsPDF({
+						orientation: "portrait",
+						unit: "pt",
+						format: "a4",
+					});
+					const imgWidth = 595.28; // A4 width in pt
+					const pageHeight = 841.89; // A4 height in pt
+					const imgHeight = (canvas.height * imgWidth) / canvas.width;
+					let heightLeft = imgHeight;
+					let position = 0;
+
+					pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+					heightLeft -= pageHeight;
+
+					while (heightLeft >= 0) {
+						position = heightLeft - imgHeight;
+						pdf.addPage();
+						pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+						heightLeft -= pageHeight;
+					}
+
+					// pdf.save("document.pdf");
+				});
+			};
+
 			onMounted(() => {
 				console.log("免费报告页面进入时间：" + entryTime.value); //页面进入时间
+				generatePDF();
 			});
 
 			return {
 				entryTime,
+				generatePDF,
 			};
 		},
 	};

@@ -70,105 +70,30 @@
 					<img src="../assets/img/content3-banner.png" alt="" />
 				</div>
 				<div class="user__reviews">
-					<van-swipe
-						class="my-swipe"
-						:autoplay="5000"
-						indicator-color="white"
-						vertical
+					<swiper
+						:direction="'vertical'"
+						:space-between="10"
+						:autoplay="2000"
+						class="swiper__warp"
 					>
-						<van-swipe-item>
+						<swiper-slide v-for="(item, index) in reviews" :key="index">
 							<div class="swiper__item">
 								<div class="swiper__hd">
 									<div class="swiper__hd-img">
-										<img src="../assets/img/item-img02.png" alt="" />
+										<img :src="getAvatarUrl(item.avatar)" alt="Avatar" />
 									</div>
 									<div class="swiper__hd-info">
-										<div class="user__name">大师</div>
+										<div class="user__name">{{ item.name }}</div>
 										<div class="user_rate">
 											評分：
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
+											<i v-for="n in item.rating" :key="n" class="star"></i>
 										</div>
 									</div>
 								</div>
-								<div class="swiper__bd">
-									大師說我命中婚姻果得比較晚，婁換下一個大運才有機會，看來我怎麽相親也不會有結果的，還是聽大師的。多用時間來...
-								</div>
+								<div class="swiper__bd">{{ item.review }}</div>
 							</div>
-						</van-swipe-item>
-						<van-swipe-item>
-							<div class="swiper__item">
-								<div class="swiper__hd">
-									<div class="swiper__hd-img">
-										<img src="../assets/img/item-img02.png" alt="" />
-									</div>
-									<div class="swiper__hd-info">
-										<div class="user__name">大师</div>
-										<div class="user_rate">
-											評分：
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-										</div>
-									</div>
-								</div>
-								<div class="swiper__bd">
-									大師說我命中婚姻果得比較晚，婁換下一個大運才有機會，看來我怎麽相親也...
-								</div>
-							</div>
-						</van-swipe-item>
-						<van-swipe-item>
-							<div class="swiper__item">
-								<div class="swiper__hd">
-									<div class="swiper__hd-img">
-										<img src="../assets/img/item-img02.png" alt="" />
-									</div>
-									<div class="swiper__hd-info">
-										<div class="user__name">大师</div>
-										<div class="user_rate">
-											評分：
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-										</div>
-									</div>
-								</div>
-								<div class="swiper__bd">
-									大師說我命中婚姻果得比較晚，婁換下一個大運才有機會，間來...
-								</div>
-							</div>
-						</van-swipe-item>
-						<van-swipe-item>
-							<div class="swiper__item">
-								<div class="swiper__hd">
-									<div class="swiper__hd-img">
-										<img src="../assets/img/item-img02.png" alt="" />
-									</div>
-									<div class="swiper__hd-info">
-										<div class="user__name">大师</div>
-										<div class="user_rate">
-											評分：
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-											<i class="star"></i>
-										</div>
-									</div>
-								</div>
-								<div class="swiper__bd">
-									大師說我命中婚姻果得比較晚，婁換下一個大運才有機會，看來我怎麽相親也不會有結果的，還是聽大師的。多用時間來...
-								</div>
-							</div>
-						</van-swipe-item>
-					</van-swipe>
+						</swiper-slide>
+					</swiper>
 				</div>
 			</div>
 		</section>
@@ -181,31 +106,37 @@
 </template>
 
 <script>
-	import { ref, onMounted } from "vue";
-	import { usePageEntryTime } from "../utils/pageEntryTime"; // 引入页面时间钩子函数
-	import { getInitInfo } from "../services/index";
+	import { ref, onMounted, computed } from "vue"
+	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
+	import { Swiper, SwiperSlide } from "swiper/vue"
+	import "swiper/css"
+	import reviewsData from "@/data/userlist.json"
 
 	export default {
 		name: "HomePage",
+		components: {
+			Swiper,
+			SwiperSlide,
+		},
 		setup() {
-			const { entryTime } = usePageEntryTime(); //调用页面进入时间
-			const data = {};
+			const { entryTime } = usePageEntryTime() //调用页面进入时间
+			const reviews = computed(() => reviewsData.reviews)
+			// console.log(reviews)
 
 			onMounted(async () => {
-				console.log("主页页面进入时间：" + entryTime.value); //页面进入时间
-				try {
-					const response = await getInitInfo(data); // 调用 getInitInfo
-					data.value = response.data; // 将获取的数据赋值给响应式变量
-				} catch (error) {
-					console.error("Failed to fetch initial info:", error);
-				}
-			});
+				console.log("主页页面进入时间：" + entryTime.value) //页面进入时间
+			})
+			// 解析 JSON 文件中的图片路径
+			const getAvatarUrl = (avatar) => {
+				return new URL(`../assets/${avatar}`, import.meta.url).href
+			}
 			return {
 				entryTime,
-				data,
-			};
+				reviews,
+				getAvatarUrl,
+			}
 		},
-	};
+	}
 </script>
 <style lang="scss" scoped>
 	.btn {

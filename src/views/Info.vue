@@ -71,23 +71,23 @@
 </template>
 
 <script>
-	import { showDialog } from "vant";
-	import { ref, reactive, toRaw, nextTick, onMounted } from "vue";
-	import { useRouter } from "vue-router"; // 引入 useRouter
+	import { showDialog } from "vant"
+	import { ref, reactive, toRaw, nextTick, onMounted } from "vue"
+	import { useRouter } from "vue-router" // 引入 useRouter
 
-	import FingerprintJS from "@fingerprintjs/fingerprintjs";
+	import FingerprintJS from "@fingerprintjs/fingerprintjs"
 
-	import DatePickerGroup from "../components/DatePicker.vue";
-	import { usePageEntryTime } from "../utils/pageEntryTime"; // 引入页面时间钩子函数
-	import { postUserInfo } from "../services/index"; // 引入页面时间钩子函数
+	import DatePickerGroup from "../components/DatePicker.vue"
+	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
+	import { postUserInfo } from "../services/index"
 
 	export default {
 		components: {
 			DatePickerGroup,
 		},
 		setup() {
-			const { entryTime } = usePageEntryTime(); //调用页面进入时间
-			const router = useRouter();
+			const { entryTime } = usePageEntryTime() //调用页面进入时间
+			const router = useRouter()
 
 			//表单数据
 			const formData = ref({
@@ -98,33 +98,33 @@
 				destinyType: "",
 				uid: "",
 				destinyParts: "baseInfo,characters",
-			});
+			})
 
 			const selectGender = (gender) => {
-				formData.gender = gender;
-			};
+				formData.gender = gender
+			}
 
-			const selectedValue = ref(null);
+			const selectedValue = ref(null)
 
 			// 需求按钮
 			const selectButton = async (event, value) => {
 				if (selectedValue.value === value) {
-					selectedValue.value = null;
-					formData.value.destinyType = "";
+					selectedValue.value = null
+					formData.value.destinyType = ""
 				} else {
-					selectedValue.value = value;
+					selectedValue.value = value
 					if (value == "Button1") {
-						formData.value.destinyType = "DESTINY_TYPE_SINGLE";
+						formData.value.destinyType = "DESTINY_TYPE_SINGLE"
 					}
 					if (value == "Button2") {
-						formData.value.destinyType = "DESTINY_TYPE_BROKEN";
+						formData.value.destinyType = "DESTINY_TYPE_BROKEN"
 					}
 				}
-				console.log(formData.value.destinyType);
-				await nextTick();
+				console.log(formData.value.destinyType)
+				await nextTick()
 				// console.log('Selected Button:', selectedValue.value);
 				// console.log('formData value:', formData.value);
-			};
+			}
 
 			// 验证环节
 			const validate = ({
@@ -142,47 +142,47 @@
 						message: "请选择出生日期",
 					},
 					{ condition: !destinyType, message: "请选择您的需求" },
-				];
+				]
 
 				for (const { condition, message } of checks) {
 					if (condition) {
-						showDialog({ title: "提示", message });
-						return false; // Stop further validation
+						showDialog({ title: "提示", message })
+						return false // Stop further validation
 					}
 				}
 
-				return true; // All validations passed
-			};
+				return true // All validations passed
+			}
 
 			const handleSubmit = async () => {
 				if (validate(formData.value)) {
-					const rawFormData = toRaw(formData.value);
-					console.log("rawFormData", rawFormData);
+					const rawFormData = toRaw(formData.value)
+					console.log("rawFormData", rawFormData)
 					// 在这里处理表单提交逻辑，例如发送 API 请求
 					try {
-						const response = await postUserInfo(rawFormData, "example"); // 发送 POST 请求
-						console.log("Response:", response.data);
+						const response = await postUserInfo(rawFormData, "example") // 发送 POST 请求
+						console.log("Response:", response.data)
 						// router.push({ name: 'ErrorPage' });//执行成功跳转
 					} catch (error) {
-						router.push({ name: "DetailPage" }); //测试成功跳转
-						console.error("Failed to post data:", error);
+						router.push({ name: "DetailPage" }) //测试成功跳转
+						console.error("Failed to post data:", error)
 					}
 				}
-			};
+			}
 			onMounted(() => {
 				// 通过 FingerprintJS v3+ 初始化
 				FingerprintJS.load()
 					.then((fp) => fp.get())
 					.then((result) => {
 						// 获取浏览器指纹ID
-						formData.value.uid = result.visitorId;
+						formData.value.uid = result.visitorId
 						// console.log("用户设备ID：" + formData.value.uid);
 					})
 					.catch((error) => {
-						console.error("Failed to load FingerprintJS", error);
-					});
-				console.log("信息填写页面进入时间：" + entryTime.value); //页面进入时间
-			});
+						console.error("Failed to load FingerprintJS", error)
+					})
+				console.log("信息填写页面进入时间：" + entryTime.value) //页面进入时间
+			})
 
 			return {
 				formData,
@@ -191,9 +191,9 @@
 				selectedValue,
 				selectGender,
 				entryTime,
-			};
+			}
 		},
-	};
+	}
 </script>
 
 <style scoped></style>
