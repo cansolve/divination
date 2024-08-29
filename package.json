@@ -37,7 +37,7 @@
     "jspdf": "^2.5.1",
     "normalize.css": "^8.0.1",
     "query-string": "^7.0.1",
-    "swiper": "^11.1.10",
+    "swiper": "^10.0.0",
     "vant": "^4.9.4",
     "vue": "^3.4.31",
     "vue-router": "^4.4.2"

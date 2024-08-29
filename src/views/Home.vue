@@ -72,8 +72,11 @@
 				<div class="user__reviews">
 					<swiper
 						:direction="'vertical'"
+						:slidesPerView="2"
 						:space-between="10"
-						:autoplay="2000"
+						:loop="true"
+						:modules="modules"
+						:autoplay="{ delay: 2000, disableOnInteraction: false }"
 						class="swiper__warp"
 					>
 						<swiper-slide v-for="(item, index) in reviews" :key="index">
@@ -108,8 +111,11 @@
 <script>
 	import { ref, onMounted, computed } from "vue"
 	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
+
 	import { Swiper, SwiperSlide } from "swiper/vue"
 	import "swiper/css"
+	import { Autoplay } from "swiper/modules"
+
 	import reviewsData from "@/data/userlist.json"
 
 	export default {
@@ -133,6 +139,7 @@
 			return {
 				entryTime,
 				reviews,
+				modules: [Autoplay],
 				getAvatarUrl,
 			}
 		},

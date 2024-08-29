@@ -16,7 +16,7 @@ img {
 	top: 0;
 	width: 100%;
 	height: auto;
-	padding-bottom: 160px;
+	padding-bottom: 220px;
 	box-sizing: border-box;
 
 	.banner {
@@ -154,10 +154,10 @@ img {
 
 			.user__reviews {
 				.swiper__warp {
-					height: 590px;
+					height: 600px;
 					overflow: hidden;
 					.swiper-slide {
-						height: auto !important;
+						margin-left: 0 !important;
 					}
 				}
 				.swiper__item {
