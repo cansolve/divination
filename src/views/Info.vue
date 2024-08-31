@@ -1,8 +1,8 @@
 <template>
 	<div class="info__page">
 		<div class="info__tit">
-			<div class="title1">填写信息</div>
-			<div class="title2">免费查看报告</div>
+			<div class="title1">填寫信息</div>
+			<div class="title2">免費查看報告</div>
 		</div>
 		<div class="form__wrap">
 			<form @submit.prevent="handleSubmit">
@@ -37,7 +37,7 @@
 				<div class="input__group">
 					<input
 						type="text"
-						placeholder="请输入姓名"
+						placeholder="請輸入姓名"
 						v-model="formData.name"
 						id="name"
 					/>
@@ -53,17 +53,17 @@
 						:class="{ active: selectedValue === 'Button1' }"
 						@click="selectButton($event, 'Button1')"
 					>
-						单身寻找姻缘
+						單身尋找姻緣
 					</van-button>
 					<van-button
 						:class="{ active: selectedValue === 'Button2' }"
 						@click="selectButton($event, 'Button2')"
 					>
-						破裂关系走向
+						破裂關係走向
 					</van-button>
 				</div>
 				<div class="foot__btn">
-					<div class="submit__btn" @click="handleSubmit">免费查看报告</div>
+					<div class="submit__btn" @click="handleSubmit">免費查看報告</div>
 				</div>
 			</form>
 		</div>
@@ -95,7 +95,7 @@
 				name: "",
 				lunarBirthday: "",
 				gregorianBirthday: "",
-				destinyType: "",
+				destinyType: "DESTINY_TYPE_SINGLE",
 				uid: "",
 				destinyParts: "baseInfo,characters",
 			})
@@ -120,10 +120,8 @@
 						formData.value.destinyType = "DESTINY_TYPE_BROKEN"
 					}
 				}
-				console.log(formData.value.destinyType)
+				// console.log(formData.value.destinyType)
 				await nextTick()
-				// console.log('Selected Button:', selectedValue.value);
-				// console.log('formData value:', formData.value);
 			}
 
 			// 验证环节
@@ -135,13 +133,13 @@
 				destinyType,
 			}) => {
 				const checks = [
-					{ condition: !gender, message: "请选择性别" },
-					{ condition: !name, message: "请填写姓名" },
+					{ condition: !gender, message: "請選擇性別" },
+					{ condition: !name, message: "請填寫姓名" },
 					{
 						condition: !lunarBirthday && !gregorianBirthday,
-						message: "请选择出生日期",
+						message: "請選擇出生日期",
 					},
-					{ condition: !destinyType, message: "请选择您的需求" },
+					{ condition: !destinyType, message: "請選擇您的需求" },
 				]
 
 				for (const { condition, message } of checks) {
@@ -162,9 +160,11 @@
 					try {
 						const response = await postUserInfo(rawFormData, "example") // 发送 POST 请求
 						console.log("Response:", response.data)
-						// router.push({ name: 'ErrorPage' });//执行成功跳转
+						// router.push({
+						// 	name: "DetailPage",
+						// 	params: { destinyType: formData.value.destinyType },
+						// }) //测试成功跳转
 					} catch (error) {
-						router.push({ name: "DetailPage" }) //测试成功跳转
 						console.error("Failed to post data:", error)
 					}
 				}

@@ -672,7 +672,6 @@ img {
 			&:focus {
 				background: #fff;
 				outline: none;
-				/* 去除浏览器默认的焦点样式 */
 				appearance: none;
 			}
 		}
@@ -699,9 +698,9 @@ img {
 			background-size: 100% 100%;
 			cursor: pointer;
 			&.lock {
-				cursor: not-allowed; /* 禁止的鼠标指针 */
-				opacity: 0.9; /* 半透明效果 */
-				pointer-events: none; /* 禁止点击操作 */
+				cursor: not-allowed;
+				opacity: 0.9;
+				pointer-events: none;
 				filter: grayscale(100%);
 				color: #b4b4b4;
 			}
@@ -746,13 +745,11 @@ p {
 	40%,
 	100% {
 		transform: scale(0.95);
-		/* 初始和结束时大小为正常 */
 	}
 
 	10%,
 	30% {
 		transform: scale(1);
-		/* 在动画中间时，按钮放大到 1.2 倍 */
 	}
 }
 
@@ -760,4 +757,7 @@ p {
 	.van-picker__confirm {
 		color: #f46825;
 	}
+}
+.van-dialog__confirm {
+	color: #f46825 !important;
 }

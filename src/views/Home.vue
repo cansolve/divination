@@ -6,7 +6,7 @@
 		<section class="content1">
 			<div class="content__wrap">
 				<div class="common__tit">你是不是在經历這樣的情況</div>
-				<div class="con__tit">無法找到姻缘</div>
+				<div class="con__tit">無法找到姻緣</div>
 				<div class="content__item-wrap">
 					<div class="content__item">
 						<div class="item__img">
@@ -117,7 +117,7 @@
 	import { Autoplay } from "swiper/modules"
 
 	import reviewsData from "@/data/userlist.json"
-
+	import { postUserInfo } from "../services/index"
 	export default {
 		name: "HomePage",
 		components: {
@@ -131,6 +131,8 @@
 
 			onMounted(async () => {
 				console.log("主页页面进入时间：" + entryTime.value) //页面进入时间
+				const response = await postUserInfo({ data: "rawFormData" }, "example") // 发送 POST 请求
+				console.log("Response:", response.data)
 			})
 			// 解析 JSON 文件中的图片路径
 			const getAvatarUrl = (avatar) => {

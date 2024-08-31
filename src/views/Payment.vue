@@ -5,24 +5,24 @@
 		</div>
 		<div class="pay__body">
 			<div class="pay__tips">
-				已将测算问题发给专业老师，支付后可获得老师的专业分析
+				已將測算問題發給專業老師，支付後可獲得老師的專業分析
 			</div>
 			<div class="pay__wrap">
 				<div class="pay__hd">
 					<div class="destiny__type">
-						测算项目：<span class="tit">单身寻找姻缘</span>
+						測算項目：<span class="tit">單身尋找姻緣</span>
 					</div>
 					<div class="left__time">
-						<div class="time__title">距优惠结束：</div>
+						<div class="time__title">距優惠結束：</div>
 						<div class="time__num">{{ formattedTime }}</div>
 					</div>
 				</div>
 				<div class="pay__bd">
 					<div class="special__price" v-if="!countdownEnded">
-						特惠价格：$39.9
+						特惠價格：$39.9
 					</div>
 					<div :class="{ through: !countdownEnded }" class="old__price">
-						测算原价：$69.9
+						測算原價：$69.9
 					</div>
 				</div>
 				<van-divider>支付方式</van-divider>
@@ -40,7 +40,7 @@
 				<input
 					type="email"
 					v-model="email"
-					placeholder="请输入邮箱地址接受完整报告"
+					placeholder="請輸入郵箱地址接受完整報告"
 				/>
 			</div>
 			<div class="pay__btn-wrap">
@@ -116,20 +116,20 @@
 			// 处理支付按钮点击
 			const handlePayButtonClick = () => {
 				if (!email.value) {
-					alert("请输入邮箱地址！")
+					alert("請輸入郵箱地址！")
 					return
 				}
 				if (!isValidEmail(email.value)) {
-					alert("请输入有效的邮箱地址！")
+					alert("請輸入有效的郵箱地址！")
 					return
 				}
 				// 如果通过验证，执行下一步操作，例如跳转页面或提交数据
 				showConfirmDialog({
-					message: "请再次确认邮箱是否正确",
+					message: "請再次確認郵箱是否正確",
 				})
 					.then(() => {
 						// on confirm
-						alert("邮箱验证通过，进入下一步操作")
+						alert("郵箱驗證通過，進入下一步操作")
 					})
 					.catch(() => {
 						// on cancel

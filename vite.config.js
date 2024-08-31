@@ -115,11 +115,12 @@ export default defineConfig({
 		}),
 	],
 	server: {
-		// proxy: {
-		//   '/event': {
-		//     target: 'http://10.0.8.67:8868',
-		//     changeOrigin: true
-		//   }
-		// }
+		proxy: {
+			"/post/destiny": {
+				target: "http://13.250.14.135",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/post/, ""),
+			},
+		},
 	},
 })

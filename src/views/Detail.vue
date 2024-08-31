@@ -4,7 +4,18 @@
 			<img src="../assets/img/detail-banner.jpg" alt="" />
 		</div>
 		<div class="page__title">
-			<span class="title__txt">单身寻找姻缘</span>
+			<span class="title__txt" v-show="destinyType === 'DESTINY_TYPE_SINGLE'"
+				>單身尋找姻緣</span
+			>
+			<span class="title__txt" v-show="destinyType === 'DESTINY_TYPE_BROKEN'"
+				>破裂關係走向</span
+			>
+			<span
+				v-show="
+					!['DESTINY_TYPE_SINGLE', 'DESTINY_TYPE_BROKEN'].includes(destinyType)
+				"
+				>未知的命运类型</span
+			>
 		</div>
 		<div class="detail__wrap">
 			<div class="main-info">
@@ -56,57 +67,74 @@
 	</div>
 </template>
 <script>
-	import { onMounted } from "vue";
-	import { usePageEntryTime } from "../utils/pageEntryTime"; // 引入页面时间钩子函数
+	import { onMounted, ref, watch } from "vue"
+	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
 
-	import html2canvas from "html2canvas";
-	import jsPDF from "jspdf";
+	import html2canvas from "html2canvas"
+	import jsPDF from "jspdf"
+
+	import { useRoute } from "vue-router"
 
 	export default {
 		name: "DetailPage",
 		setup() {
-			const { entryTime } = usePageEntryTime(); //调用页面进入时间
+			const { entryTime } = usePageEntryTime() //调用页面进入时间
 
+			const route = useRoute()
+			const destinyType = ref(route.params?.destinyType || "")
+
+			// 监听路由参数的变化
+			watch(
+				() => route.params.destinyType,
+				(newVal) => {
+					if (newVal) {
+						destinyType.value = newVal
+						// console.log("Updated destinyType:", destinyType.value)
+					}
+				},
+				{ immediate: true }, // 确保在初始化时也会执行一次
+			)
 			const generatePDF = () => {
-				const element = document.getElementById("pdf-content");
+				const element = document.getElementById("pdf-content")
 
 				html2canvas(element, { scale: 2, dpi: 300 }).then((canvas) => {
-					const imgData = canvas.toDataURL("image/png");
+					const imgData = canvas.toDataURL("image/png")
 					const pdf = new jsPDF({
 						orientation: "portrait",
 						unit: "pt",
 						format: "a4",
-					});
-					const imgWidth = 595.28; // A4 width in pt
-					const pageHeight = 841.89; // A4 height in pt
-					const imgHeight = (canvas.height * imgWidth) / canvas.width;
-					let heightLeft = imgHeight;
-					let position = 0;
+					})
+					const imgWidth = 595.28 // A4 width in pt
+					const pageHeight = 841.89 // A4 height in pt
+					const imgHeight = (canvas.height * imgWidth) / canvas.width
+					let heightLeft = imgHeight
+					let position = 0
 
-					pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-					heightLeft -= pageHeight;
+					pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+					heightLeft -= pageHeight
 
 					while (heightLeft >= 0) {
-						position = heightLeft - imgHeight;
-						pdf.addPage();
-						pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-						heightLeft -= pageHeight;
+						position = heightLeft - imgHeight
+						pdf.addPage()
+						pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
+						heightLeft -= pageHeight
 					}
 
 					// pdf.save("document.pdf");
-				});
-			};
+				})
+			}
 
 			onMounted(() => {
-				console.log("免费报告页面进入时间：" + entryTime.value); //页面进入时间
-				generatePDF();
-			});
+				console.log("免费报告页面进入时间：" + entryTime.value) //页面进入时间
+				generatePDF()
+			})
 
 			return {
 				entryTime,
+				destinyType,
 				generatePDF,
-			};
+			}
 		},
-	};
+	}
 </script>
 <style lang="scss"></style>

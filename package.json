@@ -1,5 +1,5 @@
 {
-  "name": "vite-scaffold-non-separate",
+  "name": "divination",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
+    "@types/opencc-js": "^1.0.3",
     "@vitejs/plugin-vue": "^5.1.2",
     "fs-extra": "^10.0.0",
     "lunar-javascript": "^1.6.12",
