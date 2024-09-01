@@ -77,6 +77,7 @@
 
 	export default {
 		name: "DetailPage",
+
 		setup() {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 

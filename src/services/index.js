@@ -13,7 +13,7 @@ export function examplePost(data) {
 // 首页获得信息
 export function getInitInfo(params) {
 	return request({
-		url: `list?${queryString.stringify(query)}`,
+		url: "/comments",
 		method: "GET",
 		params,
 	})
@@ -22,7 +22,7 @@ export function getInitInfo(params) {
 // 提交信息
 export function postUserInfo(data) {
 	return request({
-		url: "/post/destiny",
+		url: "/destiny",
 		method: "POST",
 		data,
 	})

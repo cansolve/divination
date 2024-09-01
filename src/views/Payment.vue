@@ -44,13 +44,27 @@
 				/>
 			</div>
 			<div class="pay__btn-wrap">
-				<div
+				<!-- <PayPalButton
 					:class="{ lock: isLocked }"
 					class="pay__btn"
+					:isPayPalButtonClicked="isPayPalButtonClicked"
+				/> -->
+				<button
 					@click="handlePayButtonClick"
+					:class="{ lock: isLocked }"
+					class="pay__btn"
 				>
 					立即支付
-				</div>
+				</button>
+				<van-dialog
+					v-model:show="showPaypalDialog"
+					title="支付"
+					show-cancel-button="false"
+				>
+					<div class="paypalbutton-box">
+						<PayPalButton />
+					</div>
+				</van-dialog>
 			</div>
 		</div>
 	</div>
@@ -59,14 +73,20 @@
 <script>
 	import { ref, computed, onMounted } from "vue"
 
-	import { showConfirmDialog } from "vant"
+	import { showDialog, showConfirmDialog } from "vant"
+
+	import PayPalButton from "../components/PayPalButton.vue"
 
 	export default {
 		name: "PaymentPage",
+		components: {
+			PayPalButton,
+		},
 		setup() {
 			const checked = ref(false)
 			const email = ref("")
 			const isLocked = ref(true)
+			const showPaypalDialog = ref(false)
 
 			const countdownTime = ref(5 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
@@ -116,11 +136,11 @@
 			// 处理支付按钮点击
 			const handlePayButtonClick = () => {
 				if (!email.value) {
-					alert("請輸入郵箱地址！")
+					showDialog({ message: "請輸入郵箱地址！" })
 					return
 				}
 				if (!isValidEmail(email.value)) {
-					alert("請輸入有效的郵箱地址！")
+					showDialog({ message: "請輸入有效的郵箱地址！" })
 					return
 				}
 				// 如果通过验证，执行下一步操作，例如跳转页面或提交数据
@@ -129,7 +149,7 @@
 				})
 					.then(() => {
 						// on confirm
-						alert("郵箱驗證通過，進入下一步操作")
+						showPaypalDialog.value = true
 					})
 					.catch(() => {
 						// on cancel
@@ -144,6 +164,7 @@
 				checked,
 				email,
 				isLocked,
+				showPaypalDialog,
 				formattedTime,
 				countdownEnded,
 				handleCheckboxChange,

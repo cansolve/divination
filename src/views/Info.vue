@@ -155,8 +155,7 @@
 			const handleSubmit = async () => {
 				if (validate(formData.value)) {
 					const rawFormData = toRaw(formData.value)
-					console.log("rawFormData", rawFormData)
-					// 在这里处理表单提交逻辑，例如发送 API 请求
+					//表单提交
 					try {
 						const response = await postUserInfo(rawFormData, "example") // 发送 POST 请求
 						console.log("Response:", response.data)

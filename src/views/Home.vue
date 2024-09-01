@@ -117,7 +117,7 @@
 	import { Autoplay } from "swiper/modules"
 
 	import reviewsData from "@/data/userlist.json"
-	import { postUserInfo } from "../services/index"
+	import { getInitInfo } from "../services/index"
 	export default {
 		name: "HomePage",
 		components: {
@@ -131,8 +131,8 @@
 
 			onMounted(async () => {
 				console.log("主页页面进入时间：" + entryTime.value) //页面进入时间
-				const response = await postUserInfo({ data: "rawFormData" }, "example") // 发送 POST 请求
-				console.log("Response:", response.data)
+				const response = await getInitInfo() // 发送 GET 请求
+				// console.log("Response:", response)
 			})
 			// 解析 JSON 文件中的图片路径
 			const getAvatarUrl = (avatar) => {
