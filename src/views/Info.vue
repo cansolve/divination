@@ -72,14 +72,14 @@
 
 <script>
 	import { showDialog } from "vant"
-	import { ref, reactive, toRaw, nextTick, onMounted } from "vue"
+	import { ref, toRaw, nextTick, onMounted } from "vue"
 	import { useRouter } from "vue-router" // 引入 useRouter
 
 	import FingerprintJS from "@fingerprintjs/fingerprintjs"
 
 	import DatePickerGroup from "../components/DatePicker.vue"
 	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
-	import { postUserInfo } from "../services/index"
+	import { useDataStore } from "../stores/dataStore"
 
 	export default {
 		components: {
@@ -88,7 +88,7 @@
 		setup() {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 			const router = useRouter()
-
+			const dataStore = useDataStore()
 			//表单数据
 			const formData = ref({
 				gender: null,
@@ -97,7 +97,7 @@
 				gregorianBirthday: "",
 				destinyType: "DESTINY_TYPE_SINGLE",
 				uid: "",
-				destinyParts: "baseInfo,characters",
+				destinyParts: "baseInfo,characters,broken,yourLove,marriage,spouse",
 			})
 
 			const selectGender = (gender) => {
@@ -155,17 +155,11 @@
 			const handleSubmit = async () => {
 				if (validate(formData.value)) {
 					const rawFormData = toRaw(formData.value)
-					//表单提交
-					try {
-						const response = await postUserInfo(rawFormData, "example") // 发送 POST 请求
-						console.log("Response:", response.data)
-						// router.push({
-						// 	name: "DetailPage",
-						// 	params: { destinyType: formData.value.destinyType },
-						// }) //测试成功跳转
-					} catch (error) {
-						console.error("Failed to post data:", error)
-					}
+					dataStore.setRawFormData(rawFormData)
+
+					router.push({
+						name: "DetailPage",
+					})
 				}
 			}
 			onMounted(() => {

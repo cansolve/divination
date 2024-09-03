@@ -108,7 +108,7 @@
 
 			const getDizhi = (hour) => dizhi[Math.floor(parseInt(hour) / 2) % 12]
 
-			const years = ref(createArray(75, 1910))
+			const years = ref(createArray(200, 1910))
 			const months = ref(createArray(12, 1))
 			const days = ref(createArray(31, 1))
 			const hourSegments = ref(createHourSegments())

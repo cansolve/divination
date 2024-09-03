@@ -5,15 +5,15 @@
 <script>
 	export default {
 		props: {
-			onClick: Function, // 接收点击事件的函数
+			showPaypalDialog: Boolean,
 		},
-
 		mounted() {
 			// 确保 PayPal SDK 已加载
 			if (window.paypal) {
 				this.renderPayPalButton()
 			}
 		},
+		emits: ["paymentSuccess", "paymentError"],
 		methods: {
 			renderPayPalButton() {
 				window.paypal
@@ -43,11 +43,11 @@
 
 						onApprove: (data, actions) => {
 							return actions.order.capture().then((details) => {
-								console.log("Payment Details:", details)
 								console.log(
 									"Transaction completed by " + details.payer.name.given_name,
 								)
 								// 你可以在这里处理支付成功后的逻辑
+								this.$emit("paymentSuccess", details)
 							})
 						},
 						onError: (err) => {

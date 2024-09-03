@@ -117,12 +117,14 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/comments": {
-				target: "http://www.pooobs.com",
+				target: "https://www.pooobs.com",
 				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/comments/, "/comments"),
 			},
 			"/destiny": {
-				target: "http://www.pooobs.com",
+				target: "https://www.pooobs.com",
 				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/destiny/, "/destiny"),
 			},
 		},
 	},

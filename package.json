@@ -37,6 +37,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "normalize.css": "^8.0.1",
+    "pinia": "^2.2.2",
     "query-string": "^7.0.1",
     "swiper": "^10.0.0",
     "vant": "^4.9.4",

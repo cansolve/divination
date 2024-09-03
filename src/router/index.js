@@ -16,10 +16,9 @@ const routes = [
 		component: InfoPage,
 	},
 	{
-		path: "/detail/:destinyType",
+		path: "/detail",
 		name: "DetailPage",
 		component: DetailPage,
-		props: true,
 	},
 	{
 		path: "/payment",

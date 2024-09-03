@@ -18,11 +18,9 @@
 					</div>
 				</div>
 				<div class="pay__bd">
-					<div class="special__price" v-if="!countdownEnded">
-						特惠價格：$39.9
-					</div>
+					<div class="special__price" v-if="!countdownEnded">特惠價格：$99</div>
 					<div :class="{ through: !countdownEnded }" class="old__price">
-						測算原價：$69.9
+						測算原價：$199
 					</div>
 				</div>
 				<van-divider>支付方式</van-divider>
@@ -44,11 +42,6 @@
 				/>
 			</div>
 			<div class="pay__btn-wrap">
-				<!-- <PayPalButton
-					:class="{ lock: isLocked }"
-					class="pay__btn"
-					:isPayPalButtonClicked="isPayPalButtonClicked"
-				/> -->
 				<button
 					@click="handlePayButtonClick"
 					:class="{ lock: isLocked }"
@@ -59,10 +52,13 @@
 				<van-dialog
 					v-model:show="showPaypalDialog"
 					title="支付"
-					show-cancel-button="false"
+					:show-cancel-button="false"
 				>
 					<div class="paypalbutton-box">
-						<PayPalButton />
+						<PayPalButton
+							@paymentSuccess="handlePaymentSuccess"
+							@paymentError="handlePaymentError"
+						/>
 					</div>
 				</van-dialog>
 			</div>
@@ -145,17 +141,28 @@
 				}
 				// 如果通过验证，执行下一步操作，例如跳转页面或提交数据
 				showConfirmDialog({
-					message: "請再次確認郵箱是否正確",
+					message: "請再次確認郵箱是否正確" + email.value,
 				})
 					.then(() => {
-						// on confirm
 						showPaypalDialog.value = true
 					})
 					.catch(() => {
 						// on cancel
 					})
 			}
+			const handlePaymentSuccess = (details) => {
+				console.log("Payment Success:", details)
+				showPaypalDialog.value = false
+				showDialog({ message: "支付成功！邮件正在发送中" })
+				// 执行支付成功后的逻辑
+			}
 
+			const handlePaymentError = (error) => {
+				console.log("Payment Error:", error)
+				showPaypalDialog.value = false
+				showDialog({ message: "支付失败，请重试！" })
+				// 执行支付失败后的逻辑
+			}
 			onMounted(() => {
 				startCountdown()
 			})
@@ -169,6 +176,8 @@
 				countdownEnded,
 				handleCheckboxChange,
 				handlePayButtonClick,
+				handlePaymentSuccess,
+				handlePaymentError,
 			}
 		},
 	}
