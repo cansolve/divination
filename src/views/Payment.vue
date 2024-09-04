@@ -63,6 +63,7 @@
 				</van-dialog>
 			</div>
 		</div>
+		<FootWidget />
 	</div>
 </template>
 
@@ -72,11 +73,13 @@
 	import { showDialog, showConfirmDialog } from "vant"
 
 	import PayPalButton from "../components/PayPalButton.vue"
+	import FootWidget from "../components/FootWidget.vue"
 
 	export default {
 		name: "PaymentPage",
 		components: {
 			PayPalButton,
+			FootWidget,
 		},
 		setup() {
 			const checked = ref(false)
@@ -155,6 +158,7 @@
 				showPaypalDialog.value = false
 				showDialog({ message: "支付成功！邮件正在发送中" })
 				// 执行支付成功后的逻辑
+				// router.push({ name: "HomePage" })
 			}
 
 			const handlePaymentError = (error) => {

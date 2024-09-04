@@ -43,11 +43,9 @@
 
 						onApprove: (data, actions) => {
 							return actions.order.capture().then((details) => {
-								console.log(
-									"Transaction completed by " + details.payer.name.given_name,
-								)
 								// 你可以在这里处理支付成功后的逻辑
 								this.$emit("paymentSuccess", details)
+								// console.log(details)
 							})
 						},
 						onError: (err) => {

@@ -236,6 +236,7 @@ img {
 		width: 100%;
 		margin-top: 200px;
 		text-align: center;
+		margin-bottom: 200px;
 	}
 
 	.custom__radio {
@@ -404,7 +405,7 @@ img {
 	.detail__wrap {
 		width: 100%;
 		height: auto;
-		padding: 50px;
+		padding: 50px 50px 0;
 		box-sizing: border-box;
 		color: #413632;
 		&.filter {
@@ -582,7 +583,7 @@ img {
 	}
 	.pay__body {
 		width: 100%;
-		padding: 40px 50px;
+		padding: 40px 50px 0;
 		box-sizing: border-box;
 	}
 	.pay__tips {
@@ -716,6 +717,15 @@ img {
 			padding: 30px 40px;
 			box-sizing: border-box;
 		}
+	}
+}
+.foot__widget {
+	margin: 30px 0;
+	font-size: 35px;
+	color: #f6641b;
+	text-align: center;
+	a {
+		color: #ccc;
 	}
 }
 p {

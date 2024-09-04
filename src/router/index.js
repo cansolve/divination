@@ -1,3 +1,11 @@
+/**
+ * @ Author: Ryan Tong
+ * @ Create Time: 2024-08-25 11:22:08
+ * @ Modified by: Ryan Tong
+ * @ Modified time: 2024-09-04 17:32:36
+ * @ Email: tongxiang608@gmail.com
+ */
+
 import { createRouter, createWebHistory } from "vue-router"
 import HomePage from "../views/Home.vue"
 import InfoPage from "../views/Info.vue"

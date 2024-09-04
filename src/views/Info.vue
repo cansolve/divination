@@ -97,7 +97,7 @@
 				gregorianBirthday: "",
 				destinyType: "DESTINY_TYPE_SINGLE",
 				uid: "",
-				destinyParts: "baseInfo,characters,broken,yourLove,marriage,spouse",
+				destinyParts: "baseInfo,characters,broken,yourLove",
 			})
 
 			const selectGender = (gender) => {

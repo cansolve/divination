@@ -130,7 +130,7 @@
 			// console.log(reviews)
 
 			onMounted(async () => {
-				console.log("主页页面进入时间：" + entryTime.value) //页面进入时间
+				console.log("进入落地页时间：" + entryTime.value) //页面进入时间
 				const response = await getInitInfo() // 发送 GET 请求
 				// console.log("Response:", response)
 			})

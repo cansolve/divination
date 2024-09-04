@@ -72,7 +72,7 @@
 					<span class="report-tit-txt">結婚年齡預測</span>
 				</div>
 				<div class="report__detail">
-					{{ responseData.marriage }}
+					從你的命盤來看，命宮中有天機和巨門星，這顯示你在處事時有較強的智慧和敏感，你善於觀察周圍環境並迅速做出反應。這種才能常使你在與他人的競爭中脫穎而出，然而，有時也顯得過於謹慎和多疑，可能會錯失一些良機。在感情方面，你可能容易給人一種冷靜的感覺，欠缺一些熱情，可能因此在與異性的互動中較難一見鍾情或迅速進展。另外，桃花星的影響意味著你若有愛情機會，需要仔細甄別和把握，不急於做出決定已避免情感上的起伏。至於目前的單身狀況，對的對象能給予涵養耐心，但也需積極創造機遇接觸更多的人群。
 				</div>
 				<div class="unpaid-infos">
 					<div class="unpaid-tips"><i></i><span>查看更多相关信息</span></div>
@@ -88,7 +88,7 @@
 					<span class="report-tit-txt">配偶外形，年齡，職業預測</span>
 				</div>
 				<div class="report__detail">
-					{{ responseData.spouse }}
+					從你的命盤來看，命宮中有天機和巨門星，這顯示你在處事時有較強的智慧和敏感，你善於觀察周圍環境並迅速做出反應。這種才能常使你在與他人的競爭中脫穎而出，然而，有時也顯得過於謹慎和多疑，可能會錯失一些良機。在感情方面，你可能容易給人一種冷靜的感覺，欠缺一些熱情，可能因此在與異性的互動中較難一見鍾情或迅速進展。另外，桃花星的影響意味著你若有愛情機會，需要仔細甄別和把握，不急於做出決定已避免情感上的起伏。至於目前的單身狀況，對的對象能給予涵養耐心，但也需積極創造機遇接觸更多的人群。
 				</div>
 				<div class="unpaid-infos">
 					<div class="unpaid-tips"><i></i><span>查看更多相关信息</span></div>
@@ -125,6 +125,7 @@
 				</div>
 			</div>
 		</div>
+		<FootWidget />
 	</div>
 </template>
 <script>
@@ -132,19 +133,19 @@
 	import { showLoadingToast, closeToast } from "vant"
 	import { useRoute } from "vue-router"
 
-	import html2canvas from "html2canvas"
-	import jsPDF from "jspdf"
-
 	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
 	import { useDataStore } from "../stores/dataStore"
 	import { postUserInfo } from "../services/index"
+	import FootWidget from "../components/FootWidget.vue"
 
 	export default {
 		name: "DetailPage",
+		components: {
+			FootWidget,
+		},
 		setup(props) {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 
-			const route = useRoute()
 			const dataStore = useDataStore()
 			const responseData = ref(null)
 			const rawFormData = dataStore.rawFormData
@@ -156,35 +157,7 @@
 			const timePart = parts.slice(1).join(" ") // "00:00-00:59(子)"
 
 			//
-			const generatePDF = () => {
-				const element = document.getElementById("pdf-content")
 
-				html2canvas(element, { scale: 2, dpi: 300 }).then((canvas) => {
-					const imgData = canvas.toDataURL("image/png")
-					const pdf = new jsPDF({
-						orientation: "portrait",
-						unit: "pt",
-						format: "a4",
-					})
-					const imgWidth = 595.28 // A4 width in pt
-					const pageHeight = 841.89 // A4 height in pt
-					const imgHeight = (canvas.height * imgWidth) / canvas.width
-					let heightLeft = imgHeight
-					let position = 0
-
-					pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
-					heightLeft -= pageHeight
-
-					while (heightLeft >= 0) {
-						position = heightLeft - imgHeight
-						pdf.addPage()
-						pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
-						heightLeft -= pageHeight
-					}
-
-					// pdf.save("document.pdf");
-				})
-			}
 			const getResponseData = async () => {
 				// 显示加载提示
 				const toast = showLoadingToast({
@@ -205,14 +178,11 @@
 			}
 			onMounted(() => {
 				console.log("免费报告页面进入时间：" + entryTime.value) //页面进入时间
-
 				getResponseData()
-				generatePDF()
 			})
 
 			return {
 				entryTime,
-				generatePDF,
 				responseData,
 				rawFormData,
 				datePart,
