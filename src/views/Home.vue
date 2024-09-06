@@ -110,14 +110,15 @@
 
 <script>
 	import { ref, onMounted, computed } from "vue"
-	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
-
+	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
 	import { Swiper, SwiperSlide } from "swiper/vue"
 	import "swiper/css"
 	import { Autoplay } from "swiper/modules"
-
 	import reviewsData from "@/data/userlist.json"
-	import { getInitInfo } from "../services/index"
+	import FingerprintJS from "@fingerprintjs/fingerprintjs"
+
+	import { postTrackInfo } from "@/services/index"
+
 	export default {
 		name: "HomePage",
 		components: {
@@ -127,12 +128,57 @@
 		setup() {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 			const reviews = computed(() => reviewsData.reviews)
-			// console.log(reviews)
+
+			const trackData = ref({
+				uid: "",
+				landingPageEntryTime: "",
+				landingPageType: "marriage",
+				deviveType: "",
+			})
+
+			const getMobileOperatingSystem = () => {
+				const userAgent =
+					navigator.userAgent || navigator.vendor || window.opera
+				// 判断 iOS 设备
+				if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+					return "iOS"
+				}
+				// 判断 Android 设备
+				if (/android/i.test(userAgent)) {
+					return "Android"
+				}
+				// 如果都不是，返回未知
+				return "unknown"
+			}
 
 			onMounted(async () => {
-				console.log("进入落地页时间：" + entryTime.value) //页面进入时间
-				const response = await getInitInfo() // 发送 GET 请求
-				// console.log("Response:", response)
+				try {
+					// 获取页面进入时间
+					trackData.value.landingPageEntryTime = entryTime.value
+					// 获取设备
+					const os = getMobileOperatingSystem()
+					trackData.value.deviveType = os
+
+					// 使用 FingerprintJS 初始化并获取 UID
+					const fp = await FingerprintJS.load()
+					const result = await fp.get()
+					trackData.value.uid = result.visitorId
+
+					// console.log("用户设备ID：" + trackData.value.uid)
+
+					// 确保 UID 已获取后再发送 POST 请求
+					if (trackData.value.uid) {
+						const trackResponse = await postTrackInfo(trackData.value) // 发送 POST 请求
+						console.log(trackResponse)
+					} else {
+						console.error("UID 未获取到")
+					}
+				} catch (error) {
+					console.error(
+						"Failed to load FingerprintJS or send track info",
+						error,
+					)
+				}
 			})
 			// 解析 JSON 文件中的图片路径
 			const getAvatarUrl = (avatar) => {
@@ -143,6 +189,7 @@
 				reviews,
 				modules: [Autoplay],
 				getAvatarUrl,
+				trackData,
 			}
 		},
 	}

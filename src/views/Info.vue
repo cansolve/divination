@@ -75,11 +75,11 @@
 	import { ref, toRaw, nextTick, onMounted } from "vue"
 	import { useRouter } from "vue-router" // 引入 useRouter
 
+	import DatePickerGroup from "@/components/DatePicker.vue"
+	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
+	import { useDataStore } from "@/stores/dataStore"
+	import { postTrackInfo } from "@/services/index"
 	import FingerprintJS from "@fingerprintjs/fingerprintjs"
-
-	import DatePickerGroup from "../components/DatePicker.vue"
-	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
-	import { useDataStore } from "../stores/dataStore"
 
 	export default {
 		components: {
@@ -95,9 +95,12 @@
 				name: "",
 				lunarBirthday: "",
 				gregorianBirthday: "",
-				destinyType: "DESTINY_TYPE_SINGLE",
+				destinyType: "destiny_type_single",
 				uid: "",
 				destinyParts: "baseInfo,characters,broken,yourLove",
+			})
+			const trackData = ref({
+				infoPageEntryTime: "",
 			})
 
 			const selectGender = (gender) => {
@@ -114,10 +117,10 @@
 				} else {
 					selectedValue.value = value
 					if (value == "Button1") {
-						formData.value.destinyType = "DESTINY_TYPE_SINGLE"
+						formData.value.destinyType = "destiny_type_single"
 					}
 					if (value == "Button2") {
-						formData.value.destinyType = "DESTINY_TYPE_BROKEN"
+						formData.value.destinyType = "destiny_type_broken"
 					}
 				}
 				// console.log(formData.value.destinyType)
@@ -162,19 +165,21 @@
 					})
 				}
 			}
-			onMounted(() => {
-				// 通过 FingerprintJS v3+ 初始化
-				FingerprintJS.load()
-					.then((fp) => fp.get())
-					.then((result) => {
-						// 获取浏览器指纹ID
-						formData.value.uid = result.visitorId
-						// console.log("用户设备ID：" + formData.value.uid);
-					})
-					.catch((error) => {
-						console.error("Failed to load FingerprintJS", error)
-					})
-				console.log("信息填写页面进入时间：" + entryTime.value) //页面进入时间
+			onMounted(async () => {
+				// 使用 FingerprintJS 初始化并获取 UID
+				const fp = await FingerprintJS.load()
+				const result = await fp.get()
+				formData.value.uid = result.visitorId
+
+				try {
+					// 获取页面进入时间
+					trackData.value.infoPageEntryTime = entryTime.value
+					// 发送 POST 请求
+					const trackResponse = await postTrackInfo(trackData.value)
+					console.log(trackResponse)
+				} catch (error) {
+					console.error("Mounted hook 中发生错误:", error)
+				}
 			})
 
 			return {
@@ -184,6 +189,7 @@
 				selectedValue,
 				selectGender,
 				entryTime,
+				trackData,
 			}
 		},
 	}

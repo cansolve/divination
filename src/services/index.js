@@ -38,3 +38,26 @@ export function postUserInfo(data) {
 		data,
 	})
 }
+// 提交track信息
+export function postTrackInfo(data) {
+	return request({
+		url: "/track",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		data,
+	})
+}
+
+// 提交email信息
+export function postEmail(data) {
+	return request({
+		url: "/email",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		data,
+	})
+}

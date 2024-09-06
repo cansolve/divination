@@ -6,17 +6,17 @@
 		<div class="page__title">
 			<span
 				class="title__txt"
-				v-show="rawFormData.destinyType === 'DESTINY_TYPE_SINGLE'"
+				v-show="rawFormData.destinyType === 'destiny_type_single'"
 				>單身尋找姻緣</span
 			>
 			<span
 				class="title__txt"
-				v-show="rawFormData.destinyType === 'DESTINY_TYPE_BROKEN'"
+				v-show="rawFormData.destinyType === 'destiny_type_broken'"
 				>破裂關係走向</span
 			>
 			<span
 				v-show="
-					!['DESTINY_TYPE_SINGLE', 'DESTINY_TYPE_BROKEN'].includes(
+					!['destiny_type_single', 'destiny_type_broken'].includes(
 						rawFormData.destinyType,
 					)
 				"
@@ -133,10 +133,10 @@
 	import { showLoadingToast, closeToast } from "vant"
 	import { useRoute } from "vue-router"
 
-	import { usePageEntryTime } from "../utils/pageEntryTime" // 引入页面时间钩子函数
-	import { useDataStore } from "../stores/dataStore"
-	import { postUserInfo } from "../services/index"
-	import FootWidget from "../components/FootWidget.vue"
+	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
+	import { useDataStore } from "@/stores/dataStore"
+	import { postUserInfo, postTrackInfo } from "@/services/index"
+	import FootWidget from "@/components/FootWidget.vue"
 
 	export default {
 		name: "DetailPage",
@@ -156,6 +156,10 @@
 			const datePart = parts[0] // "1910年01月01日"
 			const timePart = parts.slice(1).join(" ") // "00:00-00:59(子)"
 
+			// 上报信息
+			const trackData = ref({
+				freeReportEntryTime: "",
+			})
 			//
 
 			const getResponseData = async () => {
@@ -170,14 +174,17 @@
 					responseData.value = response
 					// 请求成功后，关闭加载提示并跳转
 					closeToast(toast)
+
+					const trackResponse = await postTrackInfo(trackData.value) // 发送 POST 请求
+					console.log(trackResponse)
 				} catch (error) {
 					// 处理错误并关闭加载提示
 					closeToast(toast)
 					console.error("Failed to post data:", error)
 				}
 			}
-			onMounted(() => {
-				console.log("免费报告页面进入时间：" + entryTime.value) //页面进入时间
+			onMounted(async () => {
+				trackData.value.freeReportEntryTime = entryTime.value
 				getResponseData()
 			})
 

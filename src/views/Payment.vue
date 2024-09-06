@@ -72,8 +72,11 @@
 
 	import { showDialog, showConfirmDialog } from "vant"
 
-	import PayPalButton from "../components/PayPalButton.vue"
-	import FootWidget from "../components/FootWidget.vue"
+	import PayPalButton from "@/components/PayPalButton.vue"
+	import FootWidget from "@/components/FootWidget.vue"
+
+	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
+	import { postTrackInfo, postEmail } from "@/services/index"
 
 	export default {
 		name: "PaymentPage",
@@ -82,6 +85,7 @@
 			FootWidget,
 		},
 		setup() {
+			const { entryTime } = usePageEntryTime()
 			const checked = ref(false)
 			const email = ref("")
 			const isLocked = ref(true)
@@ -90,6 +94,20 @@
 			const countdownTime = ref(5 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
 
+			const trackData = ref({
+				paymentPageEntryTime: "",
+				orderCreateTime: "",
+				orderId: "",
+				orderStatus: "",
+				orderUpdateTime: "",
+				orderPurchaseValue: "",
+				payerIp: "",
+			})
+
+			const emailResponse = ref({
+				payerEmail: email.value,
+				uuid: "",
+			})
 			// 格式化时间为 mm:ss:ms
 			const formattedTime = computed(() => {
 				const totalMilliseconds = countdownTime.value
@@ -146,17 +164,41 @@
 				showConfirmDialog({
 					message: "請再次確認郵箱是否正確" + email.value,
 				})
-					.then(() => {
+					.then(async () => {
+						// const emailResponse = await postEmail(email.value)
+						// console.log(emailResponse)
 						showPaypalDialog.value = true
 					})
 					.catch(() => {
 						// on cancel
 					})
 			}
-			const handlePaymentSuccess = (details) => {
-				console.log("Payment Success:", details)
+			const handlePaymentSuccess = async (details) => {
+				if (!details) {
+					console.error("No payment details provided.")
+					return
+				}
+				// console.log("Payment Success:", details)
+				// 关闭 PayPal Dialog
 				showPaypalDialog.value = false
+				// 显示支付成功提示
 				showDialog({ message: "支付成功！邮件正在发送中" })
+
+				// 处理并保存支付信息
+				trackData.value.orderCreateTime = details.create_time || "未提供"
+				trackData.value.orderId = details.id || "未提供"
+				trackData.value.orderStatus = details.status || "未知状态"
+				trackData.value.orderUpdateTime = details.update_time || "未提供"
+				trackData.value.orderPurchaseValue =
+					details.purchase_units[0].amount.value || "未提供"
+
+				// 获取并保存国家代码（添加防错处理）
+				const payerAddress = details?.payer?.address
+				trackData.value.payerIp = payerAddress?.country_code || "未知国家"
+
+				console.log("跟踪数据:", trackData.value)
+				const trackResponse = await postTrackInfo(trackData.value)
+				console.log(trackResponse)
 				// 执行支付成功后的逻辑
 				// router.push({ name: "HomePage" })
 			}
@@ -167,13 +209,23 @@
 				showDialog({ message: "支付失败，请重试！" })
 				// 执行支付失败后的逻辑
 			}
-			onMounted(() => {
+			onMounted(async () => {
 				startCountdown()
+				try {
+					// 获取页面进入时间
+					trackData.value.paymentPageEntryTime = entryTime.value
+					// 发送 POST 请求
+					const trackResponse = await postTrackInfo(trackData.value)
+					console.log(trackResponse)
+				} catch (error) {
+					console.error("Mounted hook 中发生错误:", error)
+				}
 			})
 
 			return {
 				checked,
 				email,
+				emailResponse,
 				isLocked,
 				showPaypalDialog,
 				formattedTime,
