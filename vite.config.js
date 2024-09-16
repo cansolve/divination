@@ -136,6 +136,16 @@ export default defineConfig({
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/email/, "/email"),
 			},
+			"/order": {
+				target: "https://www.pooobs.com",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/order/, "/order"),
+			},
+			"/orderApprove": {
+				target: "https://www.pooobs.com",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/orderApprove/, "/orderApprove"),
+			},
 		},
 	},
 })

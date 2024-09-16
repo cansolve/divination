@@ -3,6 +3,9 @@
 </template>
 
 <script>
+	import { postOrderInfo, postEmail, postOrderApprove } from "@/services/index"
+	import { useDataStore } from "@/stores/dataStore"
+
 	export default {
 		props: {
 			showPaypalDialog: Boolean,
@@ -16,44 +19,88 @@
 		emits: ["paymentSuccess", "paymentError"],
 		methods: {
 			renderPayPalButton() {
+				const trackStore = useDataStore()
+				let orderIdNum = "" // 确保 orderIdNum 可以在 onApprove 中访问
+
 				window.paypal
 					.Buttons({
 						style: {
-							shape: "rect", // 按钮形状：'rect'（矩形）或 'pill'（圆角）
-							color: "gold", // 按钮颜色：'gold', 'blue', 'silver', 'white', 'black'
-							layout: "vertical", // 布局：'vertical'（垂直）或 'horizontal'（水平）
-							label: "paypal", // 标签：'paypal', 'checkout', 'buynow', 'pay', 'installment'
-							tagline: false, // 是否显示标语（tagline）：true 或 false
+							shape: "rect",
+							color: "gold",
+							layout: "vertical",
+							label: "paypal",
+							tagline: false,
 						},
 
-						createOrder: (data, actions) => {
-							if (this.onClick) {
-								this.onClick() // 先调用父组件传入的点击事件
+						// 创建订单
+						async createOrder() {
+							console.log(trackStore.trackData)
+
+							try {
+								// 调用 postOrderInfo，传递支付信息
+								const response = await postOrderInfo({
+									amount: "10",
+									currency: "HKD",
+									uid: trackStore.trackData.uid,
+									landingType: trackStore.trackData.landingType,
+									channel: trackStore.trackData.channel,
+									material: trackStore.trackData.material,
+								})
+
+								// 确保 response.orderID 存在
+								if (response && response.orderID) {
+									orderIdNum = response.orderID
+									console.log("Order created:", orderIdNum)
+
+									// 返回 PayPal 订单 ID
+									return orderIdNum
+								} else {
+									throw new Error("Invalid order creation response")
+								}
+							} catch (error) {
+								console.error("Error creating PayPal order:", error)
+								this.$emit("paymentError", error)
 							}
-							return actions.order.create({
-								purchase_units: [
-									{
-										amount: {
-											value: "0.5", // 替换为你希望的支付金额
-										},
-									},
-								],
-							})
 						},
 
-						onApprove: (data, actions) => {
-							return actions.order.capture().then((details) => {
-								// 你可以在这里处理支付成功后的逻辑
-								this.$emit("paymentSuccess", details)
-								// console.log(details)
-							})
+						// 当支付被批准时
+						onApprove: async (data, actions) => {
+							try {
+								// // 捕获订单并发起后端请求
+								const approveResponse = await postOrderApprove({
+									orderId: orderIdNum, // 使用之前创建的订单 ID
+								})
+								if (approveResponse.status === "success") {
+									// 发起邮箱请求
+									const emailResponse = await postEmail({
+										email: trackStore.emailAddr,
+										uid: trackStore.trackData.uid,
+										orderId: orderIdNum,
+									})
+									if (emailResponse.status === 200) {
+										console.log("Email sent successfully:", emailResponse.data)
+									} else {
+										throw new Error("Email sending failed")
+									}
+								} else {
+									throw new Error("Order approval failed")
+								}
+							} catch (err) {
+								console.error(
+									"Error capturing order or posting order info:",
+									err,
+								)
+								this.$emit("paymentError", err)
+							}
 						},
+
+						// 支付出错时
 						onError: (err) => {
 							console.error("PayPal Checkout Error:", err)
-							// 处理支付错误
+							this.$emit("paymentError", err)
 						},
 					})
-					.render("#paypal-button-container")
+					.render("#paypal-button-container") // 渲染 PayPal 按钮
 			},
 		},
 	}

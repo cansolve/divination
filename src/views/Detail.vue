@@ -77,9 +77,9 @@
 				<div class="unpaid-infos">
 					<div class="unpaid-tips"><i></i><span>查看更多相关信息</span></div>
 					<div class="payment__btn">
-						<router-link to="/payment">
-							<div class="submit__btn">解鎖報告內容</div>
-						</router-link>
+						<div class="submit__btn" @click="handleNavigation">
+							解鎖報告內容
+						</div>
 					</div>
 				</div>
 			</div>
@@ -93,9 +93,9 @@
 				<div class="unpaid-infos">
 					<div class="unpaid-tips"><i></i><span>查看更多相关信息</span></div>
 					<div class="payment__btn">
-						<router-link to="/payment">
-							<div class="submit__btn">解鎖報告內容</div>
-						</router-link>
+						<div class="submit__btn" @click="handleNavigation">
+							解鎖報告內容
+						</div>
 					</div>
 				</div>
 			</div>
@@ -131,7 +131,7 @@
 <script>
 	import { onMounted, ref } from "vue"
 	import { showLoadingToast, closeToast } from "vant"
-	import { useRoute } from "vue-router"
+	import { useRoute, useRouter } from "vue-router"
 
 	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
 	import { useDataStore } from "@/stores/dataStore"
@@ -155,13 +155,10 @@
 			const parts = birthday.split(" ")
 			const datePart = parts[0] // "1910年01月01日"
 			const timePart = parts.slice(1).join(" ") // "00:00-00:59(子)"
+			const route = useRoute()
+			const router = useRouter()
 
-			// 上报信息
-			const trackData = ref({
-				freeReportEntryTime: "",
-			})
 			//
-
 			const getResponseData = async () => {
 				// 显示加载提示
 				const toast = showLoadingToast({
@@ -171,23 +168,37 @@
 				//表单提交
 				try {
 					const response = await postUserInfo(rawFormData) // 发送 POST 请求
+					dataStore.setTrackData({
+						...rawFormData,
+					})
 					responseData.value = response
 					// 请求成功后，关闭加载提示并跳转
 					closeToast(toast)
-
-					const trackResponse = await postTrackInfo(trackData.value) // 发送 POST 请求
-					console.log(trackResponse)
 				} catch (error) {
 					// 处理错误并关闭加载提示
 					closeToast(toast)
 					console.error("Failed to post data:", error)
 				}
 			}
+
 			onMounted(async () => {
-				trackData.value.freeReportEntryTime = entryTime.value
+				dataStore.setTrackData({
+					action: "action_free_report",
+					actionTimestamp: entryTime.value,
+				})
+				const trackResponse = await postTrackInfo(dataStore.trackData) // 发送 POST 请求
 				getResponseData()
 			})
 
+			//
+			const handleNavigation = () => {
+				// console.log(route.query)
+				router.push({
+					name: "paymentPage", // 目标页面的名称
+					query: route.query,
+					params: "",
+				})
+			}
 			return {
 				entryTime,
 				responseData,
@@ -195,6 +206,7 @@
 				datePart,
 				timePart,
 				getResponseData,
+				handleNavigation,
 			}
 		},
 	}

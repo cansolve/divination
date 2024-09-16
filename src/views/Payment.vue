@@ -76,7 +76,9 @@
 	import FootWidget from "@/components/FootWidget.vue"
 
 	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
-	import { postTrackInfo, postEmail } from "@/services/index"
+	import { postTrackInfo } from "@/services/index"
+
+	import { useDataStore } from "@/stores/dataStore"
 
 	export default {
 		name: "PaymentPage",
@@ -94,20 +96,18 @@
 			const countdownTime = ref(5 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
 
-			const trackData = ref({
-				paymentPageEntryTime: "",
-				orderCreateTime: "",
-				orderId: "",
-				orderStatus: "",
-				orderUpdateTime: "",
-				orderPurchaseValue: "",
-				payerIp: "",
-			})
+			const trackStore = useDataStore()
 
-			const emailResponse = ref({
-				payerEmail: email.value,
-				uuid: "",
-			})
+			// const trackData = ref({
+			// 	paymentPageEntryTime: "",
+			// 	orderCreateTime: "",
+			// 	orderId: "",
+			// 	orderStatus: "",
+			// 	orderUpdateTime: "",
+			// 	orderPurchaseValue: "",
+			// 	payerIp: "",
+			// })
+
 			// 格式化时间为 mm:ss:ms
 			const formattedTime = computed(() => {
 				const totalMilliseconds = countdownTime.value
@@ -138,7 +138,9 @@
 			// 验证邮箱格式
 			const isValidEmail = (email) => {
 				const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-				return emailPattern.test(email)
+				// 检查域名中不能有连续的 "." 符号
+				const domainPart = email.split("@")[1]
+				return emailPattern.test(email) && !/(\.\.)/.test(domainPart)
 			}
 
 			// 处理复选框变化
@@ -165,8 +167,7 @@
 					message: "請再次確認郵箱是否正確" + email.value,
 				})
 					.then(async () => {
-						// const emailResponse = await postEmail(email.value)
-						// console.log(emailResponse)
+						trackStore.setEmail(email.value)
 						showPaypalDialog.value = true
 					})
 					.catch(() => {
@@ -185,26 +186,26 @@
 				showDialog({ message: "支付成功！邮件正在发送中" })
 
 				// 处理并保存支付信息
-				trackData.value.orderCreateTime = details.create_time || "未提供"
-				trackData.value.orderId = details.id || "未提供"
-				trackData.value.orderStatus = details.status || "未知状态"
-				trackData.value.orderUpdateTime = details.update_time || "未提供"
-				trackData.value.orderPurchaseValue =
-					details.purchase_units[0].amount.value || "未提供"
+				// trackData.value.orderCreateTime = details.create_time || "未提供"
+				// trackData.value.orderId = details.id || "未提供"
+				// trackData.value.orderStatus = details.status || "未知状态"
+				// trackData.value.orderUpdateTime = details.update_time || "未提供"
+				// trackData.value.orderPurchaseValue =
+				// 	details.purchase_units[0].amount.value || "未提供"
 
 				// 获取并保存国家代码（添加防错处理）
-				const payerAddress = details?.payer?.address
-				trackData.value.payerIp = payerAddress?.country_code || "未知国家"
+				// const payerAddress = details?.payer?.address
+				// trackData.value.payerIp = payerAddress?.country_code || "未知国家"
 
-				console.log("跟踪数据:", trackData.value)
-				const trackResponse = await postTrackInfo(trackData.value)
-				console.log(trackResponse)
+				// console.log("跟踪数据:", trackData.value)
+				const trackResponse = await postTrackInfo(trackStore.trackData)
+				// console.log(trackResponse)
 				// 执行支付成功后的逻辑
 				// router.push({ name: "HomePage" })
 			}
 
 			const handlePaymentError = (error) => {
-				console.log("Payment Error:", error)
+				// console.log("Payment Error:", error)
 				showPaypalDialog.value = false
 				showDialog({ message: "支付失败，请重试！" })
 				// 执行支付失败后的逻辑
@@ -212,11 +213,14 @@
 			onMounted(async () => {
 				startCountdown()
 				try {
-					// 获取页面进入时间
-					trackData.value.paymentPageEntryTime = entryTime.value
+					trackStore.setTrackData({
+						actionTimestamp: entryTime.value,
+						action: "action_pay_enter",
+					})
+					// console.log(trackStore.trackData)
 					// 发送 POST 请求
-					const trackResponse = await postTrackInfo(trackData.value)
-					console.log(trackResponse)
+					const trackResponse = await postTrackInfo(trackStore.trackData)
+					// console.log(trackResponse)
 				} catch (error) {
 					console.error("Mounted hook 中发生错误:", error)
 				}
@@ -225,7 +229,6 @@
 			return {
 				checked,
 				email,
-				emailResponse,
 				isLocked,
 				showPaypalDialog,
 				formattedTime,

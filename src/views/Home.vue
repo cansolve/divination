@@ -101,9 +101,7 @@
 			</div>
 		</section>
 		<div class="foot__btn">
-			<router-link to="/info">
-				<div class="submit__btn">拆解我的姻緣問題</div>
-			</router-link>
+			<div class="submit__btn" @click="handleNavigation">拆解我的姻緣問題</div>
 		</div>
 	</div>
 </template>
@@ -118,6 +116,8 @@
 	import FingerprintJS from "@fingerprintjs/fingerprintjs"
 
 	import { postTrackInfo } from "@/services/index"
+	import { useRoute, useRouter } from "vue-router"
+	import { useDataStore } from "@/stores/dataStore"
 
 	export default {
 		name: "HomePage",
@@ -126,15 +126,12 @@
 			SwiperSlide,
 		},
 		setup() {
+			const route = useRoute() // 获取当前路由信息
+			const router = useRouter() // 获取 router 实例
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 			const reviews = computed(() => reviewsData.reviews)
 
-			const trackData = ref({
-				uid: "",
-				landingPageEntryTime: "",
-				landingPageType: "marriage",
-				deviveType: "",
-			})
+			const trackStore = useDataStore()
 
 			const getMobileOperatingSystem = () => {
 				const userAgent =
@@ -148,31 +145,26 @@
 					return "Android"
 				}
 				// 如果都不是，返回未知
-				return "unknown"
+				return "Web"
 			}
 
 			onMounted(async () => {
 				try {
-					// 获取页面进入时间
-					trackData.value.landingPageEntryTime = entryTime.value
-					// 获取设备
-					const os = getMobileOperatingSystem()
-					trackData.value.deviveType = os
-
 					// 使用 FingerprintJS 初始化并获取 UID
 					const fp = await FingerprintJS.load()
 					const result = await fp.get()
-					trackData.value.uid = result.visitorId
 
-					// console.log("用户设备ID：" + trackData.value.uid)
+					trackStore.setTrackData({
+						uid: result.visitorId,
+						actionTimestamp: entryTime.value,
+						action: "action_landing",
+						landingType: "landing_marriage",
+						channel: route.query.channel || "",
+						material: route.query.material || "",
+						deviveType: getMobileOperatingSystem(),
+					})
 
-					// 确保 UID 已获取后再发送 POST 请求
-					if (trackData.value.uid) {
-						const trackResponse = await postTrackInfo(trackData.value) // 发送 POST 请求
-						console.log(trackResponse)
-					} else {
-						console.error("UID 未获取到")
-					}
+					const trackResponse = await postTrackInfo(trackStore.trackData) // 发送 POST 请求
 				} catch (error) {
 					console.error(
 						"Failed to load FingerprintJS or send track info",
@@ -184,12 +176,20 @@
 			const getAvatarUrl = (avatar) => {
 				return new URL(`../assets/${avatar}`, import.meta.url).href
 			}
+			const handleNavigation = () => {
+				router.push({
+					name: "info", // 目标页面的名称
+					query: route.query,
+					params: "",
+				})
+			}
 			return {
 				entryTime,
 				reviews,
 				modules: [Autoplay],
 				getAvatarUrl,
-				trackData,
+				trackStore,
+				handleNavigation,
 			}
 		},
 	}

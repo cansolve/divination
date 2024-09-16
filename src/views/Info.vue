@@ -73,7 +73,7 @@
 <script>
 	import { showDialog } from "vant"
 	import { ref, toRaw, nextTick, onMounted } from "vue"
-	import { useRouter } from "vue-router" // 引入 useRouter
+	import { useRouter, useRoute } from "vue-router" // 引入 useRouter
 
 	import DatePickerGroup from "@/components/DatePicker.vue"
 	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
@@ -88,6 +88,7 @@
 		setup() {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
 			const router = useRouter()
+			const route = useRoute()
 			const dataStore = useDataStore()
 			//表单数据
 			const formData = ref({
@@ -98,9 +99,6 @@
 				destinyType: "destiny_type_single",
 				uid: "",
 				destinyParts: "baseInfo,characters,broken,yourLove",
-			})
-			const trackData = ref({
-				infoPageEntryTime: "",
 			})
 
 			const selectGender = (gender) => {
@@ -159,9 +157,13 @@
 				if (validate(formData.value)) {
 					const rawFormData = toRaw(formData.value)
 					dataStore.setRawFormData(rawFormData)
-
+					dataStore.setTrackData({
+						...rawFormData,
+					})
+					const trackResponse = await postTrackInfo(dataStore.trackData)
 					router.push({
-						name: "DetailPage",
+						name: "detailPage",
+						query: route.query,
 					})
 				}
 			}
@@ -173,10 +175,13 @@
 
 				try {
 					// 获取页面进入时间
-					trackData.value.infoPageEntryTime = entryTime.value
+					dataStore.setTrackData({
+						action: "action_filling",
+						actionTimestamp: entryTime.value,
+					})
 					// 发送 POST 请求
-					const trackResponse = await postTrackInfo(trackData.value)
-					console.log(trackResponse)
+					const trackResponse = await postTrackInfo(dataStore.trackData)
+					// console.log(trackResponse)
 				} catch (error) {
 					console.error("Mounted hook 中发生错误:", error)
 				}
@@ -189,7 +194,7 @@
 				selectedValue,
 				selectGender,
 				entryTime,
-				trackData,
+				dataStore,
 			}
 		},
 	}

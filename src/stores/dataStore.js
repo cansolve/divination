@@ -13,7 +13,20 @@ export const useDataStore = defineStore("dataStore", {
 	state: () => ({
 		responseData: null,
 		rawFormData: null,
-		trackFormData: {}, // 用于存储多个页面的数据
+		trackData: {
+			actionTimestamp: "",
+			action: "",
+			channel: "",
+			material: "",
+			deviveType: "",
+			uid: "",
+			gender: "",
+			lunarBirthday: "",
+			gregorianBirthday: "",
+			landingType: "",
+			destinyType: "",
+		},
+		emailAddr: "",
 	}),
 	actions: {
 		setResponseData(data) {
@@ -22,17 +35,11 @@ export const useDataStore = defineStore("dataStore", {
 		setRawFormData(formdata) {
 			this.rawFormData = formdata
 		},
-
-		updateTrackFormData(partialData) {
-			this.trackFormData = { ...this.trackFormData, ...partialData }
-			console.log(this.trackFormData)
+		setTrackData(data) {
+			this.trackData = { ...this.trackData, ...data }
 		},
-		getTrackFormData() {
-			return this.trackFormData
-		},
-		// 清除数据（如提交后清空）
-		clearTrackFormData() {
-			this.trackFormData = {}
+		setEmail(emaildata) {
+			this.emailAddr = emaildata
 		},
 	},
 })

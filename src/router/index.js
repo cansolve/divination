@@ -15,22 +15,26 @@ import PaymentPage from "../views/Payment.vue"
 const routes = [
 	{
 		path: "/",
-		name: "Home",
+		redirect: "/home", // 将根路径重定向到 /home
+	},
+	{
+		path: "/home",
+		name: "home",
 		component: HomePage,
 	},
 	{
 		path: "/info",
-		name: "Info",
+		name: "info",
 		component: InfoPage,
 	},
 	{
 		path: "/detail",
-		name: "DetailPage",
+		name: "detailPage",
 		component: DetailPage,
 	},
 	{
 		path: "/payment",
-		name: "PaymentPage",
+		name: "paymentPage",
 		component: PaymentPage,
 	},
 ]

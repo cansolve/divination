@@ -61,3 +61,26 @@ export function postEmail(data) {
 		data,
 	})
 }
+
+// 提交订单信息
+export function postOrderInfo(data) {
+	return request({
+		url: "/order",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data,
+	})
+}
+// 提交orderId信息
+export function postOrderApprove(data) {
+	return request({
+		url: "/orderApprove",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data,
+	})
+}
