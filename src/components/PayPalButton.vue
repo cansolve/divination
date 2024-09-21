@@ -31,16 +31,21 @@
 							label: "paypal",
 							tagline: false,
 						},
-
+						purchase_units: [
+							{
+								amount: {
+									currency_code: "USD", // 设置为香港币
+									value: "10",
+								},
+							},
+						],
 						// 创建订单
 						async createOrder() {
-							console.log(trackStore.trackData)
-
 							try {
 								// 调用 postOrderInfo，传递支付信息
 								const response = await postOrderInfo({
 									amount: "10",
-									currency: "HKD",
+									currency: "USD",
 									uid: trackStore.trackData.uid,
 									landingType: trackStore.trackData.landingType,
 									channel: trackStore.trackData.channel,
@@ -67,6 +72,9 @@
 						onApprove: async (data, actions) => {
 							try {
 								// // 捕获订单并发起后端请求
+								//       const details = await actions.order.capture();
+								// console.log("Payment Success:", details);
+
 								const approveResponse = await postOrderApprove({
 									orderId: orderIdNum, // 使用之前创建的订单 ID
 								})
@@ -77,8 +85,9 @@
 										uid: trackStore.trackData.uid,
 										orderId: orderIdNum,
 									})
-									if (emailResponse.status === 200) {
-										console.log("Email sent successfully:", emailResponse.data)
+									if (emailResponse.status === "success") {
+										// console.log("Email sent successfully:", emailResponse)
+										this.$emit("paymentSuccess", data)
 									} else {
 										throw new Error("Email sending failed")
 									}

@@ -18,9 +18,11 @@
 					</div>
 				</div>
 				<div class="pay__bd">
-					<div class="special__price" v-if="!countdownEnded">特惠價格：$99</div>
+					<div class="special__price" v-if="!countdownEnded">
+						特惠價格：USD 99
+					</div>
 					<div :class="{ through: !countdownEnded }" class="old__price">
-						測算原價：$199
+						測算原價：USD 199
 					</div>
 				</div>
 				<van-divider>支付方式</van-divider>
@@ -79,7 +81,7 @@
 	import { postTrackInfo } from "@/services/index"
 
 	import { useDataStore } from "@/stores/dataStore"
-
+	import { useRoute, useRouter } from "vue-router"
 	export default {
 		name: "PaymentPage",
 		components: {
@@ -92,6 +94,9 @@
 			const email = ref("")
 			const isLocked = ref(true)
 			const showPaypalDialog = ref(false)
+
+			const router = useRouter() // 获取 router 实例
+			const route = useRoute() // 获取当前路由信息
 
 			const countdownTime = ref(5 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
@@ -201,7 +206,11 @@
 				const trackResponse = await postTrackInfo(trackStore.trackData)
 				// console.log(trackResponse)
 				// 执行支付成功后的逻辑
-				// router.push({ name: "HomePage" })
+				router.push({
+					name: "home", // 目标页面的名称
+					query: route.query,
+					params: "",
+				})
 			}
 
 			const handlePaymentError = (error) => {
@@ -241,3 +250,4 @@
 		},
 	}
 </script>
+<style lang="scss" scoped></style>
