@@ -7,8 +7,6 @@ import Spritesmith from "vite-plugin-spritesmith"
 import smartAsset from "rollup-plugin-smart-asset"
 import vue from "@vitejs/plugin-vue"
 
-import { publicPath } from "./.cli/config.json"
-
 const isProd = process.env.NODE_ENV === "production"
 const isPre = process.argv.length === 5 && process.argv[4] === "--pre"
 const isDev = process.argv.length === 5 && process.argv[4] === "--dev"
@@ -18,7 +16,7 @@ let base
 if (isDev) {
 	base = "./"
 } else if (isProd) {
-	base = publicPath
+	base = "/dist"
 } else {
 	base = "./"
 }
