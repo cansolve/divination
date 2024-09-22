@@ -180,7 +180,7 @@
 						actionTimestamp: entryTime.value,
 					})
 					// 发送 POST 请求
-					const trackResponse = await postTrackInfo(dataStore.trackData)
+					await postTrackInfo(dataStore.trackData)
 					// console.log(trackResponse)
 				} catch (error) {
 					console.error("Mounted hook 中发生错误:", error)

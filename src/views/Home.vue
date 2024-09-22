@@ -132,6 +132,7 @@
 			const reviews = computed(() => reviewsData.reviews)
 
 			const trackStore = useDataStore()
+			const hasPostedTrackInfo = ref(false) // 跟踪是否已经发送
 
 			const getMobileOperatingSystem = () => {
 				const userAgent =
@@ -149,27 +150,31 @@
 			}
 
 			onMounted(async () => {
-				try {
-					// 使用 FingerprintJS 初始化并获取 UID
-					const fp = await FingerprintJS.load()
-					const result = await fp.get()
+				if (!trackStore.hasPostedTrackInfo) {
+					try {
+						// 使用 FingerprintJS 初始化并获取 UID
+						const fp = await FingerprintJS.load()
+						const result = await fp.get()
 
-					trackStore.setTrackData({
-						uid: result.visitorId,
-						actionTimestamp: entryTime.value,
-						action: "action_landing",
-						landingType: "landing_marriage",
-						channel: route.query.channel || "",
-						material: route.query.material || "",
-						deviveType: getMobileOperatingSystem(),
-					})
+						trackStore.setTrackData({
+							uid: result.visitorId,
+							actionTimestamp: entryTime.value,
+							action: "action_landing",
+							landingType: "landing_marriage",
+							channel: route.query.channel || "",
+							material: route.query.material || "",
+							deviceType: getMobileOperatingSystem(),
+						})
 
-					const trackResponse = await postTrackInfo(trackStore.trackData) // 发送 POST 请求
-				} catch (error) {
-					console.error(
-						"Failed to load FingerprintJS or send track info",
-						error,
-					)
+						await postTrackInfo(trackStore.trackData) // 发送 POST 请求
+						// 标记为已发送
+						trackStore.markTrackInfoAsPosted()
+					} catch (error) {
+						console.error(
+							"Failed to load FingerprintJS or send track info",
+							error,
+						)
+					}
 				}
 			})
 			// 解析 JSON 文件中的图片路径

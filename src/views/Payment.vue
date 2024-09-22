@@ -19,10 +19,10 @@
 				</div>
 				<div class="pay__bd">
 					<div class="special__price" v-if="!countdownEnded">
-						特惠價格：USD 99
+						特惠價格：HKD 99
 					</div>
 					<div :class="{ through: !countdownEnded }" class="old__price">
-						測算原價：USD 199
+						測算原價：HKD 199
 					</div>
 				</div>
 				<van-divider>支付方式</van-divider>
@@ -173,6 +173,10 @@
 				})
 					.then(async () => {
 						trackStore.setEmail(email.value)
+						trackStore.setTrackData({
+							action: "action_pay",
+						})
+						await postTrackInfo(trackStore.trackData)
 						showPaypalDialog.value = true
 					})
 					.catch(() => {
@@ -184,54 +188,57 @@
 					console.error("No payment details provided.")
 					return
 				}
-				// console.log("Payment Success:", details)
 				// 关闭 PayPal Dialog
 				showPaypalDialog.value = false
 				// 显示支付成功提示
 				showDialog({ message: "支付成功！邮件正在发送中" })
-
-				// 处理并保存支付信息
-				// trackData.value.orderCreateTime = details.create_time || "未提供"
-				// trackData.value.orderId = details.id || "未提供"
-				// trackData.value.orderStatus = details.status || "未知状态"
-				// trackData.value.orderUpdateTime = details.update_time || "未提供"
-				// trackData.value.orderPurchaseValue =
-				// 	details.purchase_units[0].amount.value || "未提供"
-
-				// 获取并保存国家代码（添加防错处理）
-				// const payerAddress = details?.payer?.address
-				// trackData.value.payerIp = payerAddress?.country_code || "未知国家"
-
-				// console.log("跟踪数据:", trackData.value)
-				const trackResponse = await postTrackInfo(trackStore.trackData)
-				// console.log(trackResponse)
-				// 执行支付成功后的逻辑
-				router.push({
-					name: "home", // 目标页面的名称
-					query: route.query,
-					params: "",
+				trackStore.setTrackData({
+					action: "action_send_email_success",
 				})
+				await postTrackInfo(trackStore.trackData)
+				// 执行支付成功后的逻辑
+				try {
+					await router.push({
+						name: "home", // 目标页面的名称
+						query: route.query,
+						params: "",
+					})
+					trackStore.setTrackData({
+						action: "action_recovery",
+					})
+					await postTrackInfo(trackStore.trackData)
+				} catch (err) {
+					console.error("Failed to navigate to home:", err)
+				}
 			}
 
-			const handlePaymentError = (error) => {
+			const handlePaymentError = async (error) => {
 				// console.log("Payment Error:", error)
 				showPaypalDialog.value = false
 				showDialog({ message: "支付失败，请重试！" })
 				// 执行支付失败后的逻辑
+				trackStore.setTrackData({
+					action: "action_pay_failed",
+				})
+				await postTrackInfo(trackStore.trackData)
 			}
 			onMounted(async () => {
 				startCountdown()
-				try {
-					trackStore.setTrackData({
-						actionTimestamp: entryTime.value,
-						action: "action_pay_enter",
-					})
-					// console.log(trackStore.trackData)
-					// 发送 POST 请求
-					const trackResponse = await postTrackInfo(trackStore.trackData)
-					// console.log(trackResponse)
-				} catch (error) {
-					console.error("Mounted hook 中发生错误:", error)
+				if (!trackStore.hasPostedTrackInfo2) {
+					try {
+						trackStore.setTrackData({
+							actionTimestamp: entryTime.value,
+							action: "action_pay_enter",
+						})
+						// console.log(trackStore.trackData)
+						// 发送 POST 请求
+						await postTrackInfo(trackStore.trackData)
+						// 标记为已发送
+						trackStore.markTrackInfoAsPosted()
+						// console.log(trackResponse)
+					} catch (error) {
+						console.error("Mounted hook 中发生错误:", error)
+					}
 				}
 			})
 

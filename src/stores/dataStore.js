@@ -18,7 +18,7 @@ export const useDataStore = defineStore("dataStore", {
 			action: "",
 			channel: "",
 			material: "",
-			deviveType: "",
+			deviceType: "",
 			uid: "",
 			gender: "",
 			lunarBirthday: "",
@@ -27,6 +27,8 @@ export const useDataStore = defineStore("dataStore", {
 			destinyType: "",
 		},
 		emailAddr: "",
+		hasPostedTrackInfo: false, // 保存是否发送过数据的标志
+		hasPostedTrackInfo2: false, // 保存是否发送过数据的标志
 	}),
 	actions: {
 		setResponseData(data) {
@@ -40,6 +42,12 @@ export const useDataStore = defineStore("dataStore", {
 		},
 		setEmail(emaildata) {
 			this.emailAddr = emaildata
+		},
+		markTrackInfoAsPosted() {
+			this.hasPostedTrackInfo = true
+		},
+		markTrackInfoAsPosted2() {
+			this.hasPostedTrackInfo2 = true
 		},
 	},
 })

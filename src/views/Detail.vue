@@ -33,9 +33,7 @@
 					<span>*</span>出生時間：<span>{{ timePart }}</span>
 				</p>
 				<div class="more__info-tit">你的紫微鬥數命盤如下:</div>
-				<div class="more__info-txt">
-					{{ responseData.baseInfo }}
-				</div>
+				<div class="more__info-txt" v-html="responseData.baseInfo"></div>
 			</div>
 			<div class="free__report">
 				<div class="report-tit">
@@ -157,7 +155,6 @@
 			const timePart = parts.slice(1).join(" ") // "00:00-00:59(子)"
 			const route = useRoute()
 			const router = useRouter()
-
 			//
 			const getResponseData = async () => {
 				// 显示加载提示
@@ -165,28 +162,44 @@
 					message: "大師正在預測中...",
 					duration: 0, // 持续显示，直到手动关闭
 				})
-				//表单提交
+
+				// 表单提交
 				try {
 					const response = await postUserInfo(rawFormData) // 发送 POST 请求
-					dataStore.setTrackData({
-						...rawFormData,
-					})
-					responseData.value = response
-					// 请求成功后，关闭加载提示并跳转
-					closeToast(toast)
+
+					if (response.code === 200) {
+						// 请求成功，设置数据并关闭加载提示
+						dataStore.setTrackData({
+							...rawFormData,
+						})
+						responseData.value = response.data
+						closeToast(toast)
+					} else {
+						// 请求失败，关闭加载提示并弹出错误提示
+						responseData.value = ""
+						closeToast(toast)
+						showFailToast({
+							message: "系統開小差了，提交失敗，請重試",
+						})
+					}
 				} catch (error) {
-					// 处理错误并关闭加载提示
+					// 捕获请求错误，关闭加载提示并弹出错误提示
 					closeToast(toast)
+					showFailToast({
+						message: "數據提交失敗，請檢查網絡或稍後重試",
+					})
 					console.error("Failed to post data:", error)
 				}
 			}
 
 			onMounted(async () => {
-				dataStore.setTrackData({
-					action: "action_free_report",
-					actionTimestamp: entryTime.value,
-				})
-				const trackResponse = await postTrackInfo(dataStore.trackData) // 发送 POST 请求
+				if (!dataStore.hasPostedTrackInfo) {
+					dataStore.setTrackData({
+						action: "action_free_report",
+						actionTimestamp: entryTime.value,
+					})
+					await postTrackInfo(dataStore.trackData) // 发送 POST 请求
+				}
 				getResponseData()
 			})
 

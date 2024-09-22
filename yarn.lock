@@ -2238,7 +2238,7 @@ sass@^1.43.4:
 save-pixels@~2.3.0:
   version "2.3.6"
   resolved "https://registry.npmjs.org/save-pixels/-/save-pixels-2.3.6.tgz"
-  integrity sha512-/ayfEWBxt0tFpf5lxSU1S0+/TBn7EiaTZD+6GL+mwizHm3BKCBysnzT6Js7BusDUVcNVLkeJJKLZcBgdpM2leQ==
+  integrity sha512-/ayfEWBxt0tFpf5lxSU1S0+/TBn7EiaTZD+6GL+mwizHm3BKCBysnzT6Js7BHKDUVcNVLkeJJKLZcBgdpM2leQ==
   dependencies:
     contentstream "^1.0.0"
     gif-encoder "~0.4.1"
