@@ -6,49 +6,8 @@
 		<section class="content1">
 			<div class="content__wrap">
 				<div class="common__tit">你是不是在經历這樣的情況</div>
-				<div class="con__tit">無法找到姻緣</div>
-				<div class="content__item-wrap">
-					<div class="content__item">
-						<div class="item__img">
-							<img src="../assets/img/item-img01.png" alt="" />
-						</div>
-						<div class="item__name">
-							錯過好姻緣
-							<div class="item__dsc">單身許久， 錯過很多機會</div>
-						</div>
-					</div>
-					<div class="content__item">
-						<div class="item__img">
-							<img src="../assets/img/item-img02.png" alt="" />
-						</div>
-						<div class="item__name">
-							對婚姻迷茫
-							<div class="item__dsc">適婚年齡， 自己無可奈何</div>
-						</div>
-					</div>
-				</div>
-				<div class="con__tit">關系的破滅</div>
-				<div class="content__item-wrap">
-					<div class="content__item">
-						<div class="item__img">
-							<img src="../assets/img/item-img03.png" alt="" />
-						</div>
-						<div class="item__name">
-							愛錯了人
-							<div class="item__dsc">分手收場, 最後人財兩空</div>
-						</div>
-					</div>
-					<div class="content__item">
-						<div class="item__img">
-							<img src="../assets/img/item-img04.png" alt="" />
-						</div>
-						<div class="item__name">
-							離婚後
-							<br />
-							心灰意冷
-							<div class="item__dsc">無奈離婚， 以後還有機會嗎</div>
-						</div>
-					</div>
+				<div class="con__wrap">
+					<img src="../assets/img/item-img0.png" alt="" />
 				</div>
 			</div>
 		</section>
@@ -199,7 +158,7 @@
 		},
 	}
 </script>
-<style lang="scss" scoped>
+<style>
 	.btn {
 		display: flex;
 		justify-content: center;

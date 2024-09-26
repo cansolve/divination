@@ -3,9 +3,9 @@ import { resolve } from "path"
 import viteImagemin from "vite-plugin-imagemin"
 import Banner from "vite-plugin-banner"
 import eruda from "vite-plugin-eruda"
-import Spritesmith from "vite-plugin-spritesmith"
 import smartAsset from "rollup-plugin-smart-asset"
 import vue from "@vitejs/plugin-vue"
+import { version } from "./package.json" // 使用 package.json 版本号
 
 const isProd = process.env.NODE_ENV === "production"
 const isPre = process.argv.length === 5 && process.argv[4] === "--pre"
@@ -21,6 +21,9 @@ if (isDev) {
 	base = "./"
 }
 
+// 自定义版本号，可以直接使用 package.json 中的 version
+const versionQuery = `?v=${version}`
+
 export default defineConfig({
 	base,
 	resolve: {
@@ -34,21 +37,22 @@ export default defineConfig({
 		assetsInlineLimit: 0,
 		rollupOptions: {
 			output: {
-				entryFileNames: `js/${staticFileName}.js`,
-				chunkFileNames: `js/${staticFileName}.js`,
+				// 移除哈希值，添加版本号查询参数
+				entryFileNames: ({ name }) => `js/${name}.js${versionQuery}`,
+				chunkFileNames: ({ name }) => `js/${name}.js${versionQuery}`,
 				assetFileNames: ({ name }) => {
 					const ext = name.split(".").pop()
-					const path = ext === "css" ? "css" : "img"
-					if (name.indexOf("img/locale") > -1) {
-						return `img/locale-temp/${staticFileName}.[ext]`
+					// 对 CSS 文件添加版本号查询参数
+					if (ext === "css") {
+						return `css/${name}.css${versionQuery}`
 					}
-					return `${path}/${staticFileName}.[ext]`
+					// 图片文件不添加版本号
+					if (name.indexOf("img/locale") > -1) {
+						return `img/locale-temp/${name}`
+					}
+					return `img/${name}`
 				},
 			},
-			// input: {
-			//   main: resolve(__dirname, 'index.html'),
-			//   nested: resolve(__dirname, 'pages/demo/index.html')
-			// }
 		},
 		assetsDir: "",
 	},
@@ -60,46 +64,27 @@ export default defineConfig({
 		// eruda(),
 		smartAsset({
 			url: "copy",
-			useHash: true,
+			useHash: false, // 不使用哈希
 			keepName: true,
 			nameFormat: `img/locale/${staticFileName}[ext]`,
 			include: resolve(__dirname, "./src/assets/img/locale/*.*"),
-			hashOptions: {
-				encoding: "hex",
-			},
-		}),
-		Spritesmith({
-			watch: process.env.NODE_ENV !== "production",
-			src: {
-				cwd: "./src/assets/img/sprites",
-				glob: "*.png",
-			},
-			target: {
-				image: "./src/assets/img/sprite.png",
-				css: "./src/assets/style/sprite.scss",
-			},
 		}),
 		viteImagemin({
 			gifsicle: {
-				//处理和压缩 GIF 文件
 				optimizationLevel: 7,
 				interlaced: false,
 			},
 			optipng: {
-				//用于优化 PNG 图像
 				optimizationLevel: 7,
 			},
 			mozjpeg: {
-				//用于压缩 JPEG 图像
 				quality: 80,
 			},
 			pngquant: {
-				//另一种用于 PNG 的压缩工具
 				quality: [0.8, 0.9],
 				speed: 4,
 			},
 			svgo: {
-				//优化 SVG 图像，
 				plugins: [
 					{
 						name: "removeViewBox",

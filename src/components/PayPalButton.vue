@@ -58,6 +58,7 @@
 									landingType: trackStore.trackData.landingType,
 									channel: trackStore.trackData.channel,
 									material: trackStore.trackData.material,
+									email: trackStore.trackData.email,
 								})
 
 								// 确保 response.orderID 存在

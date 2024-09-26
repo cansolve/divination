@@ -31,7 +31,6 @@
 						v-model="checked"
 						label-position="left"
 						checked-color="#d51e00"
-						@change="handleCheckboxChange"
 						><i class="pay-radio-icon"></i
 					></van-checkbox>
 				</div>
@@ -90,9 +89,8 @@
 		},
 		setup() {
 			const { entryTime } = usePageEntryTime()
-			const checked = ref(false)
+			const checked = ref(true)
 			const email = ref("")
-			const isLocked = ref(true)
 			const showPaypalDialog = ref(false)
 
 			const router = useRouter() // 获取 router 实例
@@ -148,15 +146,6 @@
 				return emailPattern.test(email) && !/(\.\.)/.test(domainPart)
 			}
 
-			// 处理复选框变化
-			const handleCheckboxChange = () => {
-				if (checked.value) {
-					isLocked.value = false
-				} else {
-					isLocked.value = true
-				}
-			}
-
 			// 处理支付按钮点击
 			const handlePayButtonClick = () => {
 				if (!email.value) {
@@ -175,6 +164,7 @@
 						trackStore.setEmail(email.value)
 						trackStore.setTrackData({
 							action: "action_pay",
+							email: email.value,
 						})
 						await postTrackInfo(trackStore.trackData)
 						showPaypalDialog.value = true
@@ -245,11 +235,9 @@
 			return {
 				checked,
 				email,
-				isLocked,
 				showPaypalDialog,
 				formattedTime,
 				countdownEnded,
-				handleCheckboxChange,
 				handlePayButtonClick,
 				handlePaymentSuccess,
 				handlePaymentError,

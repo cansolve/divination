@@ -25,6 +25,7 @@
 			</div>
 			<van-picker
 				:columns="columns"
+				v-model="selectedValues2"
 				confirm-button-text="確認"
 				@confirm="onConfirm"
 				@cancel="showPicker = false"
@@ -83,16 +84,16 @@
 
 			const createHourSegments = () =>
 				Array.from({ length: 24 }, (_, i) => {
-					const hour = String(i).padStart(2, "0")
-					const dizhiSymbol = getDizhi(hour)
+					const hour = (i - 1 + 24) % 24 // 往前推1小时，确保时间不会小于0
+					const formattedHour = String(hour).padStart(2, "0") // 格式化小时
+					const dizhiSymbol = getDizhi(formattedHour) // 获取对应的地支符号
 					return {
-						text: `${hour}:00-${hour}:59(${dizhiSymbol})`,
-						value: `${hour}:00-${hour}:59`,
+						text: `${formattedHour}:00-${formattedHour}:59(${dizhiSymbol})`,
+						value: `${formattedHour}:00-${formattedHour}:59`,
 					}
 				})
 
 			const dizhi = [
-				"子",
 				"丑",
 				"寅",
 				"卯",
@@ -104,20 +105,34 @@
 				"酉",
 				"戌",
 				"亥",
+				"子",
 			]
 
-			const getDizhi = (hour) => dizhi[Math.floor(parseInt(hour) / 2) % 12]
-
-			const years = ref(createArray(200, 1910))
+			const getDizhi = (hour) => {
+				// 小时往前推1，确保24小时制正确
+				const adjustedHour = (parseInt(hour) - 1 + 24) % 24
+				return dizhi[Math.floor(adjustedHour / 2) % 12]
+			}
+			const years = ref(createArray(75, 1950))
 			const months = ref(createArray(12, 1))
 			const days = ref(createArray(31, 1))
 			const hourSegments = ref(createHourSegments())
-
 			const columns = ref([
 				years.value,
 				months.value,
 				days.value,
 				hourSegments.value,
+			])
+			// 设置默认年份为1990年
+			const defaultYearIndex = years.value.findIndex(
+				(year) => year.value === "1990",
+			)
+			// 默认选中1990年1月1日，00:00-00:59
+			const selectedValues2 = ref([
+				years.value[defaultYearIndex].value,
+				months.value[0].value,
+				days.value[0].value,
+				hourSegments.value[0].value,
 			])
 
 			const updateDaysInMonth = (year, month) => {
@@ -136,10 +151,12 @@
 					days.value,
 					hourSegments.value,
 				]
+				// console.log(years.value)
 			}
 
 			const updateLunarColumns = () => {
-				const lunarYear = parseInt(years.value[0].value)
+				const lunarYear = parseInt(selectedValues2.value[0]) // 当前选中的农历年份
+				const currentSelectedMonth = selectedValues2.value[1] || 1
 
 				const lunarMonths = Array.from({ length: 12 }, (_, i) => {
 					const month = i + 1
@@ -168,9 +185,13 @@
 						value: day.value,
 					}))
 				}
+				// 获取当前选中的月份
+				const selectedMonth = parseInt(selectedValues2.value[1])
 
-				const selectedMonth = parseInt(months.value[0].value)
+				// 更新天数列表
 				days.value = lunarDays(lunarYear, selectedMonth)
+
+				// 更新列数据
 				columns.value = [
 					years.value,
 					lunarMonths,
@@ -189,14 +210,33 @@
 
 			const onChange = (event) => {
 				const { selectedValues } = event
-				const selectedYear = parseInt(selectedValues[0])
-				const selectedMonth = parseInt(selectedValues[1])
+				const selectedYear = parseInt(selectedValues[0]) // 选择的年份
+				const selectedMonth = parseInt(selectedValues[1]) // 选择的月份
 
 				if (!isNaN(selectedYear) && !isNaN(selectedMonth)) {
-					validateAndUpdateDate(selectedYear, selectedMonth)
+					if (isGregorian.value) {
+						// 阳历模式
+						validateAndUpdateDate(selectedYear, selectedMonth)
+					} else {
+						// 农历模式
+						updateLunarColumns()
+
+						// 更新 selectedValues2，确保选中年份、月份和日期的变化
+						selectedValues2.value[0] = selectedYear.toString() // 更新年份
+						selectedValues2.value[1] = selectedMonth.toString() // 更新月份
+
+						const maxDay = days.value.length
+						const selectedDay = parseInt(selectedValues[2])
+						if (selectedDay <= maxDay) {
+							selectedValues2.value[2] = selectedDay.toString()
+						} else {
+							selectedValues2.value[2] = "1" // 超出天数范围时，回到1号
+						}
+
+						selectedValues2.value[3] = selectedValues[3] // 更新时间段
+					}
 				}
 			}
-
 			const formatLunarDate = (
 				lunarYear,
 				lunarMonthText,
@@ -259,6 +299,7 @@
 					}
 				},
 				onChange,
+				selectedValues2,
 			}
 		},
 	}

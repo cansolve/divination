@@ -16,9 +16,10 @@ export function usePageEntryTime() {
 
 	function updateEntryTime() {
 		const entryTimestamp = performance.now()
-		entryTime.value = new Date(
-			performance.timeOrigin + entryTimestamp,
-		).toLocaleString()
+		const entryDate = new Date(performance.timeOrigin + entryTimestamp)
+
+		// 将日期转换为 ISO 格式，去掉毫秒部分，并确保使用 Z（UTC）时区
+		entryTime.value = entryDate.toISOString().split(".")[0] + "Z"
 	}
 
 	onMounted(() => {

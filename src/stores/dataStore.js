@@ -25,6 +25,7 @@ export const useDataStore = defineStore("dataStore", {
 			gregorianBirthday: "",
 			landingType: "",
 			destinyType: "",
+			email: "",
 		},
 		emailAddr: "",
 		hasPostedTrackInfo: false, // 保存是否发送过数据的标志

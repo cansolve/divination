@@ -7,32 +7,23 @@
 		<div class="form__wrap">
 			<form @submit.prevent="handleSubmit">
 				<div class="radio__group">
-					<label
+					<div>請選擇性別</div>
+					<div
 						class="custom__radio"
 						:class="{ active: formData.gender === 'male' }"
 						@click="selectGender('male')"
 					>
-						<input
-							type="radio"
-							name="gender"
-							value="male"
-							v-model="formData.gender"
-						/>
+						<i class="icon-male"></i>
 						<span>男</span>
-					</label>
-					<label
+					</div>
+					<div
 						class="custom__radio"
 						:class="{ active: formData.gender === 'female' }"
 						@click="selectGender('female')"
 					>
-						<input
-							type="radio"
-							name="gender"
-							value="female"
-							v-model="formData.gender"
-						/>
+						<i class="icon-female"></i>
 						<span>女</span>
-					</label>
+					</div>
 				</div>
 				<div class="input__group">
 					<input
@@ -96,13 +87,13 @@
 				name: "",
 				lunarBirthday: "",
 				gregorianBirthday: "",
-				destinyType: "destiny_type_single",
+				destinyType: "",
 				uid: "",
 				destinyParts: "baseInfo,characters,broken,yourLove",
 			})
 
 			const selectGender = (gender) => {
-				formData.gender = gender
+				formData.value.gender = gender
 			}
 
 			const selectedValue = ref(null)
@@ -168,6 +159,15 @@
 				}
 			}
 			onMounted(async () => {
+				const inputFields = document.querySelectorAll("input, textarea")
+
+				inputFields.forEach((input) => {
+					input.addEventListener("focus", () => {
+						setTimeout(() => {
+							input.scrollIntoView({ behavior: "smooth", block: "center" })
+						}, 300) // 延迟确保键盘弹出
+					})
+				})
 				// 使用 FingerprintJS 初始化并获取 UID
 				const fp = await FingerprintJS.load()
 				const result = await fp.get()

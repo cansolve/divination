@@ -3,6 +3,7 @@ module.exports = {
 		"postcss-px2vp": {
 			viewportWidth(rule) {
 				const file = rule.source?.input.file
+				console.log(file)
 				if (file?.includes("vant")) return 375
 				return 1080
 			},

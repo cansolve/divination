@@ -1,6 +1,8 @@
+/* stylelint-disable block-no-empty */
+/* stylelint-disable scss/at-extend-no-missing-placeholder */
+/* stylelint-disable selector-class-pattern */
 body {
 	position: relative;
-	margin: 0;
 	padding: 0;
 	font: normal 45px "Microsoft YaHei", Arial, sans-serif;
 	background: #ad261d;
@@ -57,51 +59,13 @@ img {
 			height: 100%;
 			margin: 0 auto;
 			border: 1px solid #ffa133;
-			background: rgba(255, 255, 255, 0.495);
+			background: rgb(255 255 255 / 49.5%);
 
-			.con__tit {
-				width: 456px;
-				height: 81px;
-				margin: 55px auto 50px;
-				line-height: 80px;
-				color: #fff;
-				background: url("../img/title-bg2.png") no-repeat center;
-				background-size: contain;
-				text-align: center;
-				font-family: "SourceHanSansCN";
-			}
-
-			.content__item-wrap {
-				display: flex;
-				padding: 0 35px;
+			.con__wrap {
+				width: 100%;
+				height: 100%;
+				padding: 40px;
 				box-sizing: border-box;
-
-				.content__item {
-					display: flex;
-					align-items: center;
-					height: 213px;
-
-					&:nth-child(1) {
-						margin-right: 35px;
-					}
-
-					.item__img {
-						width: 213px;
-						height: 213px;
-						margin-right: 15px;
-					}
-
-					.item__name {
-						flex: 1;
-						font-size: 36px;
-						line-height: 45px;
-
-						.item__dsc {
-							font-size: 29px;
-							margin-top: 20px;
-						}
-					}
-				}
 			}
 		}
 	}
@@ -120,7 +84,7 @@ img {
 			height: 100%;
 			margin: 0 auto;
 			border: 1px solid #ffa133;
-			background: rgba(255, 255, 255, 0.495);
+			background: rgb(255 255 255 / 49.5%);
 
 			.tit__s {
 				font-size: 41px;
@@ -142,6 +106,7 @@ img {
 
 	.content3 {
 		@extend .content2;
+
 		height: 1030px;
 
 		.content__wrap {
@@ -156,10 +121,12 @@ img {
 				.swiper__warp {
 					height: 600px;
 					overflow: hidden;
+
 					.swiper-slide {
 						margin-left: 0 !important;
 					}
 				}
+
 				.swiper__item {
 					.swiper__hd {
 						display: flex;
@@ -199,6 +166,7 @@ img {
 					}
 				}
 			}
+
 			.van-swipe__indicators--vertical {
 				display: none;
 			}
@@ -239,60 +207,59 @@ img {
 		margin-bottom: 200px;
 	}
 
+	.radio__group {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #fff08a;
+	}
+
 	.custom__radio {
 		position: relative;
 		display: inline-flex;
+		justify-content: center;
 		align-items: center;
 		font-size: 56px;
-		color: #fff08a;
+		color: #323233;
 		cursor: pointer;
+		width: 200px;
+		height: 100px;
+		border-radius: 50px;
+		background: #fff;
+		box-sizing: border-box;
 
-		&:nth-of-type(1) {
-			margin-right: 100px;
+		&:nth-of-type(2) {
+			margin: 0 40px;
 		}
 
-		input[type="radio"] {
-			position: absolute;
-			opacity: 0;
-			width: 100%;
-			height: 100%;
-			cursor: pointer;
+		.icon-male {
+			width: 36px;
+			height: 50px;
+			margin-right: 20px;
+			background: url("../img/male-icon.png") no-repeat right center;
+			background-size: cover;
 		}
 
-		&::before {
-			content: "";
-			display: inline-block;
-			width: 200px;
-			height: 100px;
-			margin-right: 28px;
-			border-radius: 50px;
-			background-color: #e76d52;
-			border: 10px solid #ffe2b0;
-			box-sizing: border-box;
-			transition: background-color 0.3s, border-color 0.3s;
-		}
-
-		&::after {
-			position: absolute;
-			top: 15px;
-			left: 15px;
-			display: inline-block;
-			width: 70px;
-			height: 70px;
-			background-color: #ffe2b0;
-			content: "";
-			border-radius: 50%;
-			box-sizing: border-box;
-			transition: left 0.3s ease;
+		.icon-female {
+			width: 49px;
+			height: 50px;
+			margin-right: 20px;
+			background: url("../img/female-icon.png") no-repeat right center;
+			background-size: cover;
 		}
 
 		&.active {
-			&::before {
-				background-color: #891a12;
+			background: #ffe2b0;
+			color: #c22500;
+
+			.icon-male {
+				background: url("../img/male-icon.png") no-repeat left center;
+				background-size: cover;
 			}
 
-			&::after {
-				left: 110px;
+			.icon-female {
+				background: url("../img/female-icon.png") no-repeat left center;
+				background-size: cover;
 			}
 		}
 	}
@@ -311,12 +278,11 @@ img {
 			text-align: center;
 			background-color: #fff;
 			border: 1px solid #ccc;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 
 			&:focus {
 				background: #fff;
 				outline: none;
-				/* 去除浏览器默认的焦点样式 */
 				appearance: none;
 			}
 		}
@@ -333,7 +299,7 @@ img {
 		text-align: center;
 		background-color: #fff;
 		border: 1px solid #ccc;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 
 		.van-cell {
 			align-items: center;
@@ -366,9 +332,9 @@ img {
 			font-size: 48px;
 
 			&.active {
-				background: #c22500;
-				color: #ffe2b0;
-				border: 1px solid #ffe2b0;
+				background: #ffe2b0;
+				color: #c22500;
+				border: 2px solid #ffe2b0;
 			}
 		}
 	}
@@ -379,6 +345,7 @@ img {
 	.banner {
 		width: 1080px;
 		height: 798px;
+
 		img {
 			width: 100%;
 			height: 100%;
@@ -408,8 +375,9 @@ img {
 		padding: 50px 50px 0;
 		box-sizing: border-box;
 		color: #413632;
+
 		&.filter {
-			text-shadow: 0 0 20px rgba(61, 61, 61, 0.5);
+			text-shadow: 0 0 20px rgb(61 61 61 / 50%);
 			filter: blur(15px);
 		}
 
@@ -473,8 +441,8 @@ img {
 			padding: 0 44px 70px;
 			font-size: 43px;
 			line-height: 60px;
-			background-color: rgb(255, 249, 239);
-			border: 1px solid rgb(238, 195, 155);
+			background-color: rgb(255 249 239);
+			border: 1px solid rgb(238 195 155);
 			border-radius: 10px;
 			margin-top: 90px;
 			box-sizing: border-box;
@@ -487,13 +455,14 @@ img {
 				width: 986px;
 				height: 100%;
 				content: "";
-				background: rgb(242, 220, 206);
+				background: rgb(242 220 206);
 				border-radius: 10px;
 			}
 		}
 
 		.pay__report {
 			@extend .free__report;
+
 			min-height: 800px;
 
 			.unpaid-infos {
@@ -501,7 +470,7 @@ img {
 			}
 
 			.report__detail {
-				text-shadow: 0 0 20px rgba(61, 61, 61, 0.5);
+				text-shadow: 0 0 20px rgb(61 61 61 / 50%);
 				filter: blur(10px);
 			}
 
@@ -536,10 +505,10 @@ img {
 						width: 600px;
 						height: 260px;
 						margin-top: 100px;
-						background-color: rgb(255, 255, 255);
+						background-color: rgb(255 255 255);
 						border-style: solid;
 						border-width: 1px;
-						border-color: rgb(211, 146, 86);
+						border-color: rgb(211 146 86);
 						border-radius: 6px;
 
 						i {
@@ -552,6 +521,7 @@ img {
 							margin-bottom: 5px;
 						}
 					}
+
 					.payment__btn {
 						width: 100%;
 
@@ -577,26 +547,31 @@ img {
 	.payment__banner {
 		width: 100%;
 		height: auto;
+
 		img {
 			max-width: 100%;
 		}
 	}
+
 	.pay__body {
 		width: 100%;
 		padding: 40px 50px 0;
 		box-sizing: border-box;
 	}
+
 	.pay__tips {
 		width: 100%;
 		font-size: 43px;
 		color: #fff;
 	}
+
 	.pay__wrap {
 		width: 100%;
 		border-radius: 30px;
 		background: #fff;
 		overflow: hidden;
 		margin: 80px 0 40px;
+
 		.pay__hd {
 			display: flex;
 			justify-content: space-between;
@@ -606,39 +581,48 @@ img {
 			box-sizing: border-box;
 			color: #413632;
 			background: #fa641b;
+
 			.destiny__type {
 				font-size: 35px;
+
 				.tit {
 					font-size: 45px;
 					color: #fff;
 				}
 			}
+
 			.left__time {
 				.time__title {
 					font-size: 32px;
 				}
+
 				.time__num {
 					font-size: 45px;
 					color: #fff;
 				}
 			}
 		}
+
 		.pay__bd {
 			padding: 40px 40px 0;
 			box-sizing: border-box;
+
 			.special__price {
 				font-size: 60px;
 				color: #d51e00;
 			}
+
 			.old__price {
 				margin-top: 10px;
 				font-size: 60px;
+
 				&.through {
 					font-size: 40px;
 					text-decoration: line-through;
 				}
 			}
 		}
+
 		.pay-radio__box {
 			padding: 0 50px 40px;
 			box-sizing: border-box;
@@ -650,6 +634,7 @@ img {
 				background: url("../img/PayPal.png") no-repeat center;
 				background-size: contain;
 			}
+
 			.van-checkbox {
 				display: flex;
 				justify-content: space-between;
@@ -658,8 +643,10 @@ img {
 			}
 		}
 	}
+
 	.email__wrap {
 		width: 100%;
+
 		input {
 			display: block;
 			width: 100%;
@@ -673,7 +660,7 @@ img {
 			border-radius: 20px;
 			text-align: center;
 			border: 1px solid #ccc;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
 
 			&:focus {
 				background: #fff;
@@ -682,15 +669,16 @@ img {
 			}
 		}
 	}
+
 	.pay__btn-wrap {
 		position: fixed;
 		bottom: 0;
 		left: 0;
 		z-index: 9;
 		width: 100%;
-		width: 100%;
 		padding: 30px 40px;
 		box-sizing: border-box;
+
 		.pay__btn {
 			display: flex;
 			justify-content: center;
@@ -704,6 +692,7 @@ img {
 			border: none;
 			background-size: 100% 100%;
 			cursor: pointer;
+
 			&.lock {
 				cursor: not-allowed;
 				opacity: 0.9;
@@ -712,6 +701,7 @@ img {
 				color: #b4b4b4;
 			}
 		}
+
 		.paypalbutton-box {
 			width: 100%;
 			padding: 30px 40px;
@@ -719,15 +709,18 @@ img {
 		}
 	}
 }
+
 .foot__widget {
 	margin: 30px 0;
 	font-size: 35px;
 	color: #f6641b;
 	text-align: center;
+
 	a {
 		color: #ccc;
 	}
 }
+
 p {
 	margin: 0;
 	padding: 0;
@@ -739,10 +732,9 @@ p {
 	left: 0;
 	z-index: 9;
 	width: 100%;
-	width: 100%;
 	padding: 30px 40px;
 	box-sizing: border-box;
-	background: rgba(0, 0, 0, 0.495);
+	background: rgb(0 0 0 / 49.5%);
 }
 
 .submit__btn {
@@ -779,6 +771,7 @@ p {
 		color: #f46825;
 	}
 }
+
 .van-dialog__confirm {
 	color: #f46825 !important;
 }
