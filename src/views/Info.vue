@@ -164,7 +164,7 @@
 				inputFields.forEach((input) => {
 					input.addEventListener("focus", () => {
 						setTimeout(() => {
-							input.scrollIntoView({ behavior: "smooth", block: "center" })
+							input.scrollIntoView({ behavior: "smooth", block: "nearest" })
 						}, 300) // 延迟确保键盘弹出
 					})
 				})

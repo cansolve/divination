@@ -38,13 +38,13 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				// 移除哈希值，添加版本号查询参数
-				entryFileNames: ({ name }) => `js/${name}.js${versionQuery}`,
-				chunkFileNames: ({ name }) => `js/${name}.js${versionQuery}`,
+				entryFileNames: ({ name }) => `js/${name}.js`,
+				chunkFileNames: ({ name }) => `js/${name}.js`,
 				assetFileNames: ({ name }) => {
 					const ext = name.split(".").pop()
 					// 对 CSS 文件添加版本号查询参数
 					if (ext === "css") {
-						return `css/${name}.css${versionQuery}`
+						return `css/${name}`
 					}
 					// 图片文件不添加版本号
 					if (name.indexOf("img/locale") > -1) {
@@ -96,6 +96,19 @@ export default defineConfig({
 				],
 			},
 		}),
+		// 针对 HTML 文件的 transformIndexHtml 钩子
+		{
+			name: "html-transform",
+			transformIndexHtml(html) {
+				// 为所有引用的 JS 和 CSS 文件添加版本号查询参数
+				return html.replace(
+					/(href|src)="(.+?\.(js|css))"/g,
+					(match, p1, p2, p3) => {
+						return `${p1}="${p2}${versionQuery}"`
+					},
+				)
+			},
+		},
 	],
 	server: {
 		proxy: {

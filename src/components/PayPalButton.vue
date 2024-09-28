@@ -43,7 +43,7 @@
 							{
 								amount: {
 									currency_code: "HKD", // 设置为香港币
-									value: "1",
+									value: "99",
 								},
 							},
 						],
@@ -52,7 +52,7 @@
 							try {
 								// 调用 postOrderInfo，传递支付信息
 								const response = await postOrderInfo({
-									amount: "1",
+									amount: "99",
 									currency: "HKD",
 									uid: trackStore.trackData.uid,
 									landingType: trackStore.trackData.landingType,
