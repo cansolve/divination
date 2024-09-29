@@ -180,17 +180,23 @@
 							? 30
 							: 29
 
-					return createArray(daysInLunarMonth, 1).map((day) => ({
-						text: ChineseLunar.dayName(day.value),
-						value: day.value,
-					}))
+					return createArray(daysInLunarMonth, 1).map((day) => {
+						let dayName = ChineseLunar.dayName(day.value)
+						// 判断当日期为10时，显示为 "初十"
+						if (day.value === "10") {
+							dayName = "初十"
+						}
+						return {
+							text: dayName,
+							value: day.value,
+						}
+					})
 				}
 				// 获取当前选中的月份
 				const selectedMonth = parseInt(selectedValues2.value[1])
 
 				// 更新天数列表
 				days.value = lunarDays(lunarYear, selectedMonth)
-
 				// 更新列数据
 				columns.value = [
 					years.value,
@@ -263,7 +269,12 @@
 						)}日 ${hourSegment}(${dizhiSymbol})`
 					} else {
 						const lunarMonthText = ChineseLunar.monthName(month, "traditional")
-						const lunarDayText = ChineseLunar.dayName(day)
+						// 处理初十的情况，避免返回 "十十"
+						let lunarDayText = ChineseLunar.dayName(day)
+						if (day === "10") {
+							lunarDayText = "初十"
+						}
+						console.log(lunarDayText)
 						formattedDate = formatLunarDate(
 							year,
 							lunarMonthText,

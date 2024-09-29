@@ -8,6 +8,8 @@
     "stylelint-order"
   ],
   "rules": {
+    "no-invalid-double-slash-comments": null,
+    "block-no-empty": null,
     "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": true,
     "order/order": [

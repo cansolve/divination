@@ -29,7 +29,6 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@": `${resolve(__dirname, "src")}`,
-			"swiper/css": "swiper/swiper-bundle.css",
 		},
 	},
 	hmr: true,
