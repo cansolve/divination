@@ -7,11 +7,16 @@
   "plugins": [
     "stylelint-order"
   ],
+  "customSyntax": "postcss-html",
   "rules": {
     "no-invalid-double-slash-comments": null,
     "block-no-empty": null,
     "at-rule-no-unknown": null,
+    "selector-class-pattern": null,
     "scss/at-rule-no-unknown": true,
+    "scss/at-extend-no-missing-placeholder": null,
+    "comment-empty-line-before": null,
+    "no-empty-source": true,
     "order/order": [
       "custom-properties",
       "declarations"

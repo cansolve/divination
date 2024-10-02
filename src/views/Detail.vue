@@ -193,11 +193,12 @@
 			}
 
 			onMounted(async () => {
-				if (!dataStore.hasPostedTrackInfo) {
+				if (dataStore.hasPostedTrackInfo) {
 					dataStore.setTrackData({
 						action: "action_free_report",
 						actionTimestamp: entryTime.value,
 					})
+					console.log(dataStore.trackData)
 					await postTrackInfo(dataStore.trackData) // 发送 POST 请求
 				}
 				getResponseData()
@@ -224,4 +225,3 @@
 		},
 	}
 </script>
-<style lang="scss"></style>

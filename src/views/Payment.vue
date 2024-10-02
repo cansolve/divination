@@ -220,7 +220,7 @@
 							actionTimestamp: entryTime.value,
 							action: "action_pay_enter",
 						})
-						// console.log(trackStore.trackData)
+						console.log(trackStore.trackData)
 						// 发送 POST 请求
 						await postTrackInfo(trackStore.trackData)
 						// 标记为已发送
@@ -245,4 +245,3 @@
 		},
 	}
 </script>
-<style lang="scss" scoped></style>

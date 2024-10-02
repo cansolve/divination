@@ -1,6 +1,6 @@
 {
   "name": "divination",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "dev": "vite",
     "serve": "vite preview",
@@ -12,7 +12,8 @@
     "@vitejs/plugin-vue": "^5.1.2",
     "fs-extra": "^10.0.0",
     "lunar-javascript": "^1.6.12",
-    "postcss": "^8.3.11",
+    "postcss": "^8.4.47",
+    "postcss-html": "^1.7.0",
     "postcss-px2vp": "^1.1.4",
     "rimraf": "^3.0.2",
     "rollup": "^2.58.3",
