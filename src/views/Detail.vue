@@ -3,6 +3,8 @@
 		<div class="banner">
 			<img src="../assets/img/detail-banner.jpg" alt="" />
 		</div>
+		<PaymentModule />
+
 		<div class="page__title">
 			<span
 				class="title__txt"
@@ -124,6 +126,17 @@
 			</div>
 		</div>
 		<FootWidget />
+		<van-dialog
+			v-model:show="showPaypalDialog"
+			title="支付"
+			:show-cancel-button="false"
+		>
+			<PayPalButton
+				@paymentSuccess="handlePaymentSuccess"
+				@paymentError="handlePaymentError"
+			/>
+			<div class="paypalbutton-box"></div>
+		</van-dialog>
 	</div>
 </template>
 <script>
@@ -135,11 +148,15 @@
 	import { useDataStore } from "@/stores/dataStore"
 	import { postUserInfo, postTrackInfo } from "@/services/index"
 	import FootWidget from "@/components/FootWidget.vue"
+	import PayPalButton from "@/components/PayPalButton.vue"
+	import PaymentModule from "./Payment.vue"
 
 	export default {
 		name: "DetailPage",
 		components: {
 			FootWidget,
+			PaymentModule,
+			PayPalButton,
 		},
 		setup(props) {
 			const { entryTime } = usePageEntryTime() //调用页面进入时间
@@ -147,6 +164,7 @@
 			const dataStore = useDataStore()
 			const responseData = ref(null)
 			const rawFormData = dataStore.rawFormData
+			const showPaypalDialog = ref(false)
 
 			const birthday =
 				rawFormData.lunarBirthday || rawFormData.gregorianBirthday
@@ -162,11 +180,9 @@
 					message: "大師正在預測中...",
 					duration: 0, // 持续显示，直到手动关闭
 				})
-
 				// 表单提交
 				try {
 					const response = await postUserInfo(rawFormData) // 发送 POST 请求
-
 					if (response.code === 200) {
 						// 请求成功，设置数据并关闭加载提示
 						dataStore.setTrackData({
@@ -193,27 +209,26 @@
 			}
 
 			onMounted(async () => {
-				if (dataStore.hasPostedTrackInfo) {
-					dataStore.setTrackData({
-						action: "action_free_report",
-						actionTimestamp: entryTime.value,
-					})
-					console.log(dataStore.trackData)
-					await postTrackInfo(dataStore.trackData) // 发送 POST 请求
-				}
+				// if (dataStore.hasPostedTrackInfo) {
+				// 	dataStore.setTrackData({
+				// 		action: "action_free_report",
+				// 		actionTimestamp: entryTime.value,
+				// 	})
+				// 	console.log(dataStore.trackData)
+				// 	await postTrackInfo(dataStore.trackData) // 发送 POST 请求
+				// }
 				getResponseData()
 			})
 
 			//
 			const handleNavigation = () => {
-				// console.log(route.query)
-				router.push({
-					name: "paymentPage", // 目标页面的名称
-					query: route.query,
-					params: "",
+				window.scrollTo({
+					top: 200, // 滚动到页面顶部
+					behavior: "smooth", // 平滑滚动
 				})
 			}
 			return {
+				showPaypalDialog,
 				entryTime,
 				responseData,
 				rawFormData,

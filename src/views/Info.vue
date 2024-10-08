@@ -1,9 +1,9 @@
 <template>
 	<div class="info__page">
-		<div class="info__tit">
+		<!-- <div class="info__tit">
 			<div class="title1">填寫信息</div>
 			<div class="title2">免費查看報告</div>
-		</div>
+		</div> -->
 		<div class="form__wrap">
 			<form @submit.prevent="handleSubmit">
 				<div class="radio__group">
@@ -53,8 +53,11 @@
 						破裂關係走向
 					</van-button>
 				</div>
-				<div class="foot__btn">
-					<div class="submit__btn" @click="handleSubmit">免費查看報告</div>
+				<div v-if="!showFootBtn" class="submit__btn" @click="handleSubmit">
+					免費查看報告
+				</div>
+				<div v-if="showFootBtn" class="foot__btn">
+					<div class="submit__btn" @click="handleScrollToTop">免費查看報告</div>
 				</div>
 			</form>
 		</div>
@@ -63,7 +66,7 @@
 
 <script>
 	import { showDialog } from "vant"
-	import { ref, toRaw, nextTick, onMounted } from "vue"
+	import { ref, toRaw, nextTick, onMounted, onBeforeUnmount } from "vue"
 	import { useRouter, useRoute } from "vue-router" // 引入 useRouter
 
 	import DatePickerGroup from "@/components/DatePicker.vue"
@@ -81,6 +84,7 @@
 			const router = useRouter()
 			const route = useRoute()
 			const dataStore = useDataStore()
+			const showFootBtn = ref(false)
 			//表单数据
 			const formData = ref({
 				gender: null,
@@ -144,6 +148,20 @@
 				return true // All validations passed
 			}
 
+			// 滚动处理逻辑
+			const handleScroll = () => {
+				const scrollY = window.scrollY || window.pageYOffset
+				// 设定阈值，超过 200px 时显示第二个按钮
+				showFootBtn.value = scrollY > 500
+			}
+			// 点击按钮滚动到顶部
+			const handleScrollToTop = () => {
+				window.scrollTo({
+					top: 0, // 滚动到页面顶部
+					behavior: "smooth", // 平滑滚动
+				})
+			}
+			// 提交信息查看免费报告
 			const handleSubmit = async () => {
 				if (validate(formData.value)) {
 					const rawFormData = toRaw(formData.value)
@@ -151,7 +169,7 @@
 					dataStore.setTrackData({
 						...rawFormData,
 					})
-					const trackResponse = await postTrackInfo(dataStore.trackData)
+					// await postTrackInfo(dataStore.trackData)
 					router.push({
 						name: "detailPage",
 						query: route.query,
@@ -161,6 +179,7 @@
 			onMounted(async () => {
 				const inputFields = document.querySelectorAll("input, textarea")
 
+				window.addEventListener("scroll", handleScroll)
 				inputFields.forEach((input) => {
 					input.addEventListener("focus", () => {
 						setTimeout(() => {
@@ -173,20 +192,24 @@
 				const result = await fp.get()
 				formData.value.uid = result.visitorId
 
-				try {
-					// 获取页面进入时间
-					dataStore.setTrackData({
-						action: "action_filling",
-						actionTimestamp: entryTime.value,
-					})
-					// 发送 POST 请求
-					await postTrackInfo(dataStore.trackData)
-					// console.log(trackResponse)
-				} catch (error) {
-					console.error("Mounted hook 中发生错误:", error)
-				}
+				// try {
+				// 	// 获取页面进入时间
+				// 	dataStore.setTrackData({
+				// 		action: "action_filling",
+				// 		actionTimestamp: entryTime.value,
+				// 	})
+				// 	// 发送 POST 请求
+				// 	await postTrackInfo(dataStore.trackData)
+				// 	// console.log(trackResponse)
+				// } catch (error) {
+				// 	console.error("Mounted hook 中发生错误:", error)
+				// }
 			})
 
+			// 组件销毁前移除滚动事件监听器
+			onBeforeUnmount(() => {
+				window.removeEventListener("scroll", handleScroll)
+			})
 			return {
 				formData,
 				handleSubmit,
@@ -195,6 +218,8 @@
 				selectGender,
 				entryTime,
 				dataStore,
+				showFootBtn,
+				handleScrollToTop,
 			}
 		},
 	}

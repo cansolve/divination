@@ -1,11 +1,8 @@
 <template>
 	<div class="payment__page">
-		<div class="payment__banner">
-			<img src="../assets/img/payment-banner.jpg" alt="" />
-		</div>
 		<div class="pay__body">
 			<div class="pay__tips">
-				已將測算問題發給專業老師，支付後可獲得老師的專業分析
+				已為2978346人進行測試，成功幫助208538人找到愛情，97.8%以上的測算用戶都覺得對自身的感情有很大的幫助。
 			</div>
 			<div class="pay__wrap">
 				<div class="pay__hd">
@@ -43,13 +40,7 @@
 				/>
 			</div>
 			<div class="pay__btn-wrap">
-				<button
-					@click="handlePayButtonClick"
-					:class="{ lock: isLocked }"
-					class="pay__btn"
-				>
-					立即支付
-				</button>
+				<button class="pay__btn" @click="handlePayButtonClick">立即支付</button>
 				<van-dialog
 					v-model:show="showPaypalDialog"
 					title="支付"
@@ -64,7 +55,6 @@
 				</van-dialog>
 			</div>
 		</div>
-		<FootWidget />
 	</div>
 </template>
 
@@ -96,20 +86,10 @@
 			const router = useRouter() // 获取 router 实例
 			const route = useRoute() // 获取当前路由信息
 
-			const countdownTime = ref(5 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
+			const countdownTime = ref(10 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
 
 			const trackStore = useDataStore()
-
-			// const trackData = ref({
-			// 	paymentPageEntryTime: "",
-			// 	orderCreateTime: "",
-			// 	orderId: "",
-			// 	orderStatus: "",
-			// 	orderUpdateTime: "",
-			// 	orderPurchaseValue: "",
-			// 	payerIp: "",
-			// })
 
 			// 格式化时间为 mm:ss:ms
 			const formattedTime = computed(() => {

@@ -3,9 +3,10 @@
 		<div class="banner">
 			<img src="../assets/img/banner.jpg" alt="" />
 		</div>
+		<InfoModule />
 		<section class="content1">
 			<div class="content__wrap">
-				<div class="common__tit">你是不是在經历這樣的情況</div>
+				<div class="common__tit">你是不是在經歷這樣的情況</div>
 				<div class="con__wrap">
 					<img src="../assets/img/item-img0.png" alt="" />
 				</div>
@@ -13,7 +14,7 @@
 		</section>
 		<section class="content2">
 			<div class="content__wrap">
-				<div class="common__tit">在這裏你能找到的答案</div>
+				<div class="common__tit">在這裡你能找到的答案</div>
 				<div class="tit__s">你關心的3大問題</div>
 				<div class="problem__wrap">
 					<div class="problem__img">
@@ -24,7 +25,7 @@
 		</section>
 		<section class="content3">
 			<div class="content__wrap">
-				<div class="common__tit">用户真實反饋</div>
+				<div class="common__tit">用戶真實反饋</div>
 				<div class="content3-banner">
 					<img src="../assets/img/content3-banner.png" alt="" />
 				</div>
@@ -59,9 +60,9 @@
 				</div>
 			</div>
 		</section>
-		<div class="foot__btn">
+		<!-- <div class="foot__btn">
 			<div class="submit__btn" @click="handleNavigation">拆解我的姻緣問題</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 
@@ -78,11 +79,14 @@
 	import { useRoute, useRouter } from "vue-router"
 	import { useDataStore } from "@/stores/dataStore"
 
+	import InfoModule from "./Info.vue"
+
 	export default {
 		name: "HomePage",
 		components: {
 			Swiper,
 			SwiperSlide,
+			InfoModule,
 		},
 		setup() {
 			const route = useRoute() // 获取当前路由信息
