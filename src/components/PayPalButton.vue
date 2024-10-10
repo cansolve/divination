@@ -42,8 +42,8 @@
 						purchase_units: [
 							{
 								amount: {
-									currency_code: "HKD", // 设置为香港币
-									value: "99",
+									currency_code: "USD", // 设置为香港币
+									value: "12.21",
 								},
 							},
 						],
@@ -52,8 +52,8 @@
 							try {
 								// 调用 postOrderInfo，传递支付信息
 								const response = await postOrderInfo({
-									amount: "99",
-									currency: "HKD",
+									amount: "12.21",
+									currency: "USD",
 									uid: trackStore.trackData.uid,
 									landingType: trackStore.trackData.landingType,
 									channel: trackStore.trackData.channel,
@@ -64,7 +64,7 @@
 								// 确保 response.orderID 存在
 								if (response.code === 200) {
 									this.orderIdNum = response.data.orderID // 更新 orderIdNum
-									console.log("Order created:", this.orderIdNum)
+									// console.log("Order created:", this.orderIdNum)
 
 									// 返回 PayPal 订单 ID
 									return this.orderIdNum

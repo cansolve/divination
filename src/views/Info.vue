@@ -53,6 +53,22 @@
 						破裂關係走向
 					</van-button>
 				</div>
+				<div class="privacy">
+					<van-checkbox
+						v-model="privacyChecked"
+						name="1"
+						checked-color="#f46825"
+						icon-size="20"
+						>我已閲讀並同意</van-checkbox
+					><a
+						href="privacy"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="privacy__link"
+					>
+						《用户隱私協議》</a
+					>
+				</div>
 				<div v-if="!showFootBtn" class="submit__btn" @click="handleSubmit">
 					免費查看報告
 				</div>
@@ -85,6 +101,7 @@
 			const route = useRoute()
 			const dataStore = useDataStore()
 			const showFootBtn = ref(false)
+			const privacyChecked = ref(true)
 			//表单数据
 			const formData = ref({
 				gender: null,
@@ -116,7 +133,6 @@
 						formData.value.destinyType = "destiny_type_broken"
 					}
 				}
-				// console.log(formData.value.destinyType)
 				await nextTick()
 			}
 
@@ -127,6 +143,7 @@
 				lunarBirthday,
 				gregorianBirthday,
 				destinyType,
+				privacyChecked,
 			}) => {
 				const checks = [
 					{ condition: !gender, message: "請選擇性別" },
@@ -136,6 +153,7 @@
 						message: "請選擇出生日期",
 					},
 					{ condition: !destinyType, message: "請選擇您的需求" },
+					{ condition: !privacyChecked, message: "請同意用戶協議" },
 				]
 
 				for (const { condition, message } of checks) {
@@ -163,13 +181,17 @@
 			}
 			// 提交信息查看免费报告
 			const handleSubmit = async () => {
-				if (validate(formData.value)) {
+				if (
+					validate({
+						...formData.value,
+						privacyChecked: privacyChecked.value, // 手动添加 privacyChecked
+					})
+				) {
 					const rawFormData = toRaw(formData.value)
 					dataStore.setRawFormData(rawFormData)
 					dataStore.setTrackData({
 						...rawFormData,
 					})
-					// await postTrackInfo(dataStore.trackData)
 					router.push({
 						name: "detailPage",
 						query: route.query,
@@ -191,19 +213,6 @@
 				const fp = await FingerprintJS.load()
 				const result = await fp.get()
 				formData.value.uid = result.visitorId
-
-				// try {
-				// 	// 获取页面进入时间
-				// 	dataStore.setTrackData({
-				// 		action: "action_filling",
-				// 		actionTimestamp: entryTime.value,
-				// 	})
-				// 	// 发送 POST 请求
-				// 	await postTrackInfo(dataStore.trackData)
-				// 	// console.log(trackResponse)
-				// } catch (error) {
-				// 	console.error("Mounted hook 中发生错误:", error)
-				// }
 			})
 
 			// 组件销毁前移除滚动事件监听器
@@ -220,6 +229,7 @@
 				dataStore,
 				showFootBtn,
 				handleScrollToTop,
+				privacyChecked,
 			}
 		},
 	}

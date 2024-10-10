@@ -11,6 +11,7 @@ import HomePage from "../views/Home.vue"
 import InfoPage from "../views/Info.vue"
 import DetailPage from "../views/Detail.vue"
 import PaymentPage from "../views/Payment.vue"
+import PrivacyPolicy from "@/views/PrivacyPolicy.vue"
 
 const routes = [
 	{
@@ -36,6 +37,11 @@ const routes = [
 		path: "/payment",
 		name: "paymentPage",
 		component: PaymentPage,
+	},
+	{
+		path: "/privacy",
+		name: "PrivacyPolicy",
+		component: PrivacyPolicy,
 	},
 ]
 

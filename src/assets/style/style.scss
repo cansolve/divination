@@ -788,3 +788,32 @@ p {
 .paypal-button.paypal-button-color-gold {
 	background: #ad261d !important;
 }
+.privacy {
+	margin-bottom: 20px;
+	font-size: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	.privacy__link {
+		color: rgb(248 230 132);
+		display: inline-block;
+	}
+	.van-checkbox__label {
+		color: #f3c596;
+	}
+}
+.privacy__wrap {
+	width: 100%;
+	max-width: 1200px;
+	padding: 60px;
+	box-sizing: border-box;
+
+	.tit {
+		font-size: 45px;
+	}
+	p {
+		margin: 20px 0;
+		font-size: 40px;
+		text-align: justify;
+	}
+}

@@ -16,10 +16,10 @@
 				</div>
 				<div class="pay__bd">
 					<div class="special__price" v-if="!countdownEnded">
-						特惠價格：HKD 99
+						特惠價格：USD 12.21
 					</div>
 					<div :class="{ through: !countdownEnded }" class="old__price">
-						測算原價：HKD 199
+						測算原價：USD 19.21
 					</div>
 				</div>
 				<van-divider>支付方式</van-divider>
@@ -200,7 +200,7 @@
 							actionTimestamp: entryTime.value,
 							action: "action_pay_enter",
 						})
-						console.log(trackStore.trackData)
+						// console.log(trackStore.trackData)
 						// 发送 POST 请求
 						await postTrackInfo(trackStore.trackData)
 						// 标记为已发送
