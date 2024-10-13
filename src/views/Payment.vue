@@ -4,10 +4,36 @@
 			<div class="pay__tips">
 				已為2978346人進行測試，成功幫助208538人找到愛情，97.8%以上的測算用戶都覺得對自身的感情有很大的幫助。
 			</div>
+			<div class="pay__tips">
+				透過傳統紫微斗數，為您精準推演感情運勢，包含結婚時機、另一半的長相與家世等重要關鍵，讓您更清楚自己的緣分走向，輕鬆把握幸福！
+			</div>
 			<div class="pay__wrap">
 				<div class="pay__hd">
 					<div class="destiny__type">
-						測算項目：<span class="tit">單身尋找姻緣</span>
+						測算項目：
+						<span
+							class="tit"
+							v-show="
+								trackStore.rawFormData.destinyType === 'destiny_type_single'
+							"
+							>單身尋找姻緣</span
+						>
+						<span
+							class="tit"
+							v-show="
+								trackStore.rawFormData.destinyType === 'destiny_type_broken'
+							"
+							>破裂關係走向</span
+						>
+						<span
+							class="tit"
+							v-show="
+								!['destiny_type_single', 'destiny_type_broken'].includes(
+									trackStore.rawFormData.destinyType,
+								)
+							"
+							>姻緣命書</span
+						>
 					</div>
 					<div class="left__time">
 						<div class="time__title">距優惠結束：</div>
@@ -90,7 +116,7 @@
 			const countdownEnded = ref(false)
 
 			const trackStore = useDataStore()
-
+			console.log(trackStore.rawFormData.destinyType)
 			// 格式化时间为 mm:ss:ms
 			const formattedTime = computed(() => {
 				const totalMilliseconds = countdownTime.value
@@ -215,6 +241,7 @@
 			return {
 				checked,
 				email,
+				trackStore,
 				showPaypalDialog,
 				formattedTime,
 				countdownEnded,

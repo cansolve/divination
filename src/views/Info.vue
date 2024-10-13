@@ -39,7 +39,7 @@
 					v-model:gregorianBirthday="formData.gregorianBirthday"
 				/>
 
-				<div class="requirement__group">
+				<!-- <div class="requirement__group">
 					<van-button
 						:class="{ active: selectedValue === 'Button1' }"
 						@click="selectButton($event, 'Button1')"
@@ -52,7 +52,7 @@
 					>
 						破裂關係走向
 					</van-button>
-				</div>
+				</div> -->
 				<div class="privacy">
 					<van-checkbox
 						v-model="privacyChecked"
@@ -70,10 +70,10 @@
 					>
 				</div>
 				<div v-if="!showFootBtn" class="submit__btn" @click="handleSubmit">
-					免費查看報告
+					立即測算
 				</div>
 				<div v-if="showFootBtn" class="foot__btn">
-					<div class="submit__btn" @click="handleScrollToTop">免費查看報告</div>
+					<div class="submit__btn" @click="handleScrollToTop">立即測算</div>
 				</div>
 			</form>
 		</div>
@@ -142,7 +142,7 @@
 				name,
 				lunarBirthday,
 				gregorianBirthday,
-				destinyType,
+				// destinyType,
 				privacyChecked,
 			}) => {
 				const checks = [
@@ -152,7 +152,7 @@
 						condition: !lunarBirthday && !gregorianBirthday,
 						message: "請選擇出生日期",
 					},
-					{ condition: !destinyType, message: "請選擇您的需求" },
+					// { condition: !destinyType, message: "請選擇您的需求" },
 					{ condition: !privacyChecked, message: "請同意用戶協議" },
 				]
 

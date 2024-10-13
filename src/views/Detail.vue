@@ -1,20 +1,20 @@
 <template>
 	<div class="detail__page" id="pdf-content">
-		<div class="banner">
+		<!-- <div class="banner">
 			<img src="../assets/img/detail-banner.jpg" alt="" />
-		</div>
+		</div> -->
 		<PaymentModule />
 
 		<div class="page__title">
 			<span
 				class="title__txt"
 				v-show="rawFormData.destinyType === 'destiny_type_single'"
-				>單身尋找姻緣</span
+				>姻緣命書</span
 			>
 			<span
 				class="title__txt"
 				v-show="rawFormData.destinyType === 'destiny_type_broken'"
-				>破裂關係走向</span
+				>姻緣命書</span
 			>
 			<span
 				v-show="
@@ -22,7 +22,7 @@
 						rawFormData.destinyType,
 					)
 				"
-				>未知的命运类型</span
+				>姻緣命書</span
 			>
 		</div>
 		<div class="detail__wrap" v-if="responseData">
@@ -178,6 +178,7 @@
 				// 显示加载提示
 				const toast = showLoadingToast({
 					message: "大師正在預測中...",
+					overlay: true,
 					duration: 0, // 持续显示，直到手动关闭
 				})
 				// 表单提交
@@ -190,6 +191,11 @@
 						})
 						responseData.value = response.data
 						closeToast(toast)
+						dataStore.setTrackData({
+							action: "action_free_report",
+							actionTimestamp: entryTime.value,
+						})
+						await postTrackInfo(dataStore.trackData)
 					} else {
 						// 请求失败，关闭加载提示并弹出错误提示
 						responseData.value = ""
@@ -223,7 +229,7 @@
 			//
 			const handleNavigation = () => {
 				window.scrollTo({
-					top: 200, // 滚动到页面顶部
+					top: 0, // 滚动到页面顶部
 					behavior: "smooth", // 平滑滚动
 				})
 			}

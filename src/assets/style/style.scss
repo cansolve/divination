@@ -2,7 +2,7 @@ body {
 	position: relative;
 	padding: 0;
 	font: normal 45px "Microsoft YaHei", Arial, sans-serif;
-	background: #ad261d;
+	background: #ffebed;
 }
 
 img {
@@ -20,7 +20,7 @@ img {
 
 	.banner {
 		width: 100%;
-		height: 883px;
+		height: auto;
 
 		img {
 			max-width: 100%;
@@ -46,10 +46,10 @@ img {
 	.content1 {
 		width: 1002px;
 		height: 934px;
-		background: #ffe2b0;
+		background: #ffbbc2;
 		border-radius: 20px;
 		margin: 120px auto 0;
-		padding: 25px 40px;
+		padding: 25px;
 		box-sizing: border-box;
 
 		.content__wrap {
@@ -57,7 +57,7 @@ img {
 			height: 100%;
 			margin: 0 auto;
 			border: 1px solid #ffa133;
-			background: rgb(255 255 255 / 49.5%);
+			background: #fff;
 
 			.con__wrap {
 				width: 100%;
@@ -71,10 +71,10 @@ img {
 	.content2 {
 		width: 1002px;
 		height: 689px;
-		background: #ffe2b0;
+		background: #ffbbc2;
 		border-radius: 20px;
 		margin: 150px auto 0;
-		padding: 25px 40px;
+		padding: 25px;
 		box-sizing: border-box;
 
 		.content__wrap {
@@ -82,7 +82,7 @@ img {
 			height: 100%;
 			margin: 0 auto;
 			border: 1px solid #ffa133;
-			background: rgb(255 255 255 / 49.5%);
+			background: #fff;
 
 			.tit__s {
 				font-size: 41px;
@@ -209,7 +209,7 @@ img {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		color: #fff08a;
+		color: rgb(175, 22, 20);
 	}
 
 	.custom__radio {
@@ -351,8 +351,8 @@ img {
 	font-size: 60px;
 	line-height: 150px;
 	color: #ffe2b0;
-	background: url("../img/btn.png") no-repeat center;
-	background-size: 100% 100%;
+	background: #e0345a;
+	border-radius: 10px;
 	cursor: pointer;
 	animation: resize-animation 2s infinite;
 }
@@ -459,8 +459,8 @@ img {
 			padding: 0 44px 70px;
 			font-size: 43px;
 			line-height: 60px;
-			background-color: rgb(255 249 239);
-			border: 1px solid rgb(238 195 155);
+			background-color: #fff;
+			border: 1px solid rgb(244 208 209);
 			border-radius: 10px;
 			margin-top: 90px;
 			box-sizing: border-box;
@@ -473,7 +473,7 @@ img {
 				width: 986px;
 				height: 100%;
 				content: "";
-				background: rgb(242 220 206);
+				background: rgb(244 208 209);
 				border-radius: 10px;
 			}
 		}
@@ -545,13 +545,13 @@ img {
 
 						.submit__btn {
 							width: 863px;
-							height: 212px;
+							height: 130px;
 							font-size: 60px;
-							line-height: 200px;
+							line-height: 130px;
+							border-radius: 10px;
 							margin-top: 100px;
 							color: #fff;
-							background: url("../img/unlock-btn.png") no-repeat center;
-							background-size: 100% 100%;
+							background: #de3e68;
 						}
 					}
 				}
@@ -580,7 +580,7 @@ img {
 	.pay__tips {
 		width: 100%;
 		font-size: 38px;
-		color: #fff;
+		color: #de3e68;
 	}
 
 	.pay__wrap {
@@ -598,7 +598,7 @@ img {
 			padding: 10px 40px;
 			box-sizing: border-box;
 			color: #413632;
-			background: #fa641b;
+			background: #fac5d0;
 
 			.destiny__type {
 				font-size: 35px;
@@ -701,14 +701,14 @@ img {
 			display: flex;
 			justify-content: center;
 			width: 100%;
-			height: 150px;
+			height: 130px;
 			margin: 0 auto;
 			font-size: 60px;
-			line-height: 150px;
+			line-height: 130px;
 			color: #ffe2b0;
-			background: url("../img/btn.png") no-repeat center;
+			background: #de3e68;
 			border: none;
-			background-size: 100% 100%;
+			border-radius: 10px;
 			cursor: pointer;
 
 			&.lock {
@@ -790,16 +790,17 @@ p {
 }
 .privacy {
 	margin-bottom: 20px;
+	margin-top: 30px;
 	font-size: 40px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	.privacy__link {
-		color: rgb(248 230 132);
+		color: #fe7929;
 		display: inline-block;
 	}
 	.van-checkbox__label {
-		color: #f3c596;
+		color: rgb(175, 22, 20);
 	}
 }
 .privacy__wrap {
@@ -816,4 +817,9 @@ p {
 		font-size: 40px;
 		text-align: justify;
 	}
+}
+.van-overlay {
+	// background: #fff !important;
+	// opacity: 0.8;
+	backdrop-filter: blur(20px);
 }
