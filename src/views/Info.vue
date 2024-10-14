@@ -110,7 +110,7 @@
 				gregorianBirthday: "",
 				destinyType: "",
 				uid: "",
-				destinyParts: "baseInfo,characters,broken,yourLove",
+				destinyParts: "baseInfo,characters,yourLove",
 			})
 
 			const selectGender = (gender) => {

@@ -37,7 +37,7 @@
 				<div class="more__info-tit">你的紫微鬥數命盤如下:</div>
 				<div class="more__info-txt" v-html="responseData.baseInfo"></div>
 			</div>
-			<div class="free__report">
+			<!-- <div class="free__report">
 				<div class="report-tit">
 					<span class="report-tit-txt">破裂原因</span>
 				</div>
@@ -46,7 +46,7 @@
 						{{ responseData.broken }}
 					</p>
 				</div>
-			</div>
+			</div> -->
 			<div class="free__report">
 				<div class="report-tit">
 					<span class="report-tit-txt">性格分析與單身原因</span>
