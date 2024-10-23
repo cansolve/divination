@@ -31,6 +31,8 @@
 						placeholder="請輸入姓名"
 						v-model="formData.name"
 						id="name"
+						@focus="nameInputFocus"
+						@blur="nameInputBlur"
 					/>
 				</div>
 				<!-- 使用 DatePickerGroup 组件 -->
@@ -108,33 +110,57 @@
 				name: "",
 				lunarBirthday: "",
 				gregorianBirthday: "",
-				destinyType: "",
+				destinyType: "destiny_type_single",
 				uid: "",
 				destinyParts: "baseInfo,characters,yourLove",
 			})
 
-			const selectGender = (gender) => {
+			const selectGender = async (gender) => {
 				formData.value.gender = gender
+				dataStore.setTrackData({
+					action: "action_gender_select",
+				})
+				await postTrackInfo(dataStore.trackData)
 			}
 
+			const nameInputFocus = async () => {
+				dataStore.setTrackData({
+					action: "action_input_enter",
+				})
+				await postTrackInfo(dataStore.trackData)
+			}
+
+			const nameInputBlur = async () => {
+				// console.log(formData.value.name)
+				if (formData.value.name == "") {
+					dataStore.setTrackData({
+						action: "action_input_empty",
+					})
+				} else {
+					dataStore.setTrackData({
+						action: "action_input_content",
+					})
+				}
+				await postTrackInfo(dataStore.trackData)
+			}
 			const selectedValue = ref(null)
 
 			// 需求按钮
-			const selectButton = async (event, value) => {
-				if (selectedValue.value === value) {
-					selectedValue.value = null
-					formData.value.destinyType = ""
-				} else {
-					selectedValue.value = value
-					if (value == "Button1") {
-						formData.value.destinyType = "destiny_type_single"
-					}
-					if (value == "Button2") {
-						formData.value.destinyType = "destiny_type_broken"
-					}
-				}
-				await nextTick()
-			}
+			// const selectButton = async (event, value) => {
+			// 	if (selectedValue.value === value) {
+			// 		selectedValue.value = null
+			// 		formData.value.destinyType = ""
+			// 	} else {
+			// 		selectedValue.value = value
+			// 		if (value == "Button1") {
+			// 			formData.value.destinyType = "destiny_type_single"
+			// 		}
+			// 		if (value == "Button2") {
+			// 			formData.value.destinyType = "destiny_type_broken"
+			// 		}
+			// 	}
+			// 	await nextTick()
+			// }
 
 			// 验证环节
 			const validate = ({
@@ -222,9 +248,11 @@
 			return {
 				formData,
 				handleSubmit,
-				selectButton,
+				// selectButton,
 				selectedValue,
 				selectGender,
+				nameInputFocus,
+				nameInputBlur,
 				entryTime,
 				dataStore,
 				showFootBtn,

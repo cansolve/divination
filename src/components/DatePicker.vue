@@ -6,9 +6,9 @@
 			readonly
 			name="picker"
 			placeholder="選擇出生日期"
-			@click="showPicker = true"
+			@click="handleFocus"
 		/>
-		<van-popup v-model:show="showPicker" position="bottom">
+		<van-popup v-model:show="showPicker" position="bottom" @close="handleBlur">
 			<div class="calendar-switcher">
 				<van-button
 					:class="{ active: isGregorian }"
@@ -38,7 +38,8 @@
 <script>
 	import { ref, computed, watch } from "vue"
 	import ChineseLunar from "chinese-lunar"
-
+	import { postTrackInfo } from "@/services/index"
+	import { useDataStore } from "@/stores/dataStore"
 	export default {
 		props: {
 			lunarBirthday: {
@@ -58,6 +59,29 @@
 		setup(props, { emit }) {
 			const showPicker = ref(false)
 			const isGregorian = ref(true)
+			const trackStore = useDataStore()
+
+			const handleFocus = async () => {
+				trackStore.setTrackData({
+					action: "action_birthday_enter",
+				})
+				await postTrackInfo(trackStore.trackData)
+				showPicker.value = true
+			}
+
+			const handleBlur = async () => {
+				// console.log(localSelectResult.value)
+				if (localSelectResult.value == "") {
+					trackStore.setTrackData({
+						action: "action_birthday_empty",
+					})
+				} else {
+					trackStore.setTrackData({
+						action: "action_birthday_content",
+					})
+				}
+				await postTrackInfo(trackStore.trackData)
+			}
 
 			const localSelectResult = computed({
 				get() {
@@ -295,6 +319,8 @@
 				showPicker,
 				columns,
 				onConfirm,
+				handleFocus,
+				handleBlur,
 				localSelectResult,
 				isGregorian,
 				toggleCalendar: (type) => {
