@@ -72,10 +72,10 @@
 					>
 				</div>
 				<div v-if="!showFootBtn" class="submit__btn" @click="handleSubmit">
-					立即測算
+					免費測算
 				</div>
 				<div v-if="showFootBtn" class="foot__btn">
-					<div class="submit__btn" @click="handleScrollToTop">立即測算</div>
+					<div class="submit__btn" @click="handleScrollToTop">免費測算</div>
 				</div>
 			</form>
 		</div>

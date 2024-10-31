@@ -6,16 +6,16 @@
 		<InfoModule />
 		<section class="content1">
 			<div class="content__wrap">
-				<div class="common__tit">你是不是在經歷這樣的情況</div>
+				<div class="common__tit">你是不是有這樣的煩惱？</div>
 				<div class="con__wrap">
-					<img src="../assets/img/item-img0.png" alt="" />
+					<img src="../assets/img/item-img0.jpg" alt="" />
 				</div>
 			</div>
 		</section>
 		<section class="content2">
 			<div class="content__wrap">
 				<div class="common__tit">在這裡你能找到的答案</div>
-				<div class="tit__s">你關心的3大問題</div>
+				<!-- <div class="tit__s">你關心的3大問題</div> -->
 				<div class="problem__wrap">
 					<div class="problem__img">
 						<img src="../assets/img/problem.png" alt="" />
@@ -162,34 +162,3 @@
 		},
 	}
 </script>
-<style>
-	.btn {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 1002px;
-		height: 150px;
-		background: url("../assets/img/btn.png") no-repeat center;
-		background-size: 100% 100%;
-		cursor: pointer;
-		animation: resize-animation 2s infinite;
-	}
-
-	@keyframes resize-animation {
-		0%,
-		20%,
-		40%,
-		100% {
-			transform: scale(0.95);
-
-			/* 初始和结束时大小为正常 */
-		}
-
-		10%,
-		30% {
-			transform: scale(1);
-
-			/* 在动画中间时，按钮放大到 1.2 倍 */
-		}
-	}
-</style>
