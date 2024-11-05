@@ -7,6 +7,10 @@ import smartAsset from "rollup-plugin-smart-asset"
 import vue from "@vitejs/plugin-vue"
 import { version } from "./package.json" // 使用 package.json 版本号
 
+const PrerenderSPAPlugin = require("prerender-spa-plugin")
+const path = require("path")
+const { JSDOMRenderer } = PrerenderSPAPlugin
+
 const isProd = process.env.NODE_ENV === "production"
 const isPre = process.argv.length === 5 && process.argv[4] === "--pre"
 const isDev = process.argv.length === 5 && process.argv[4] === "--dev"
@@ -142,5 +146,26 @@ export default defineConfig({
 				rewrite: (path) => path.replace(/^\/orderApprove/, "/orderApprove"),
 			},
 		},
+	},
+	configureWebpack: (config) => {
+		if (process.env.NODE_ENV === "production") {
+			config.plugins.push(
+				new PrerenderSPAPlugin({
+					// 输出文件的路径
+					staticDir: path.join(__dirname, "dist"),
+
+					// 需要预渲染的路由
+					routes: [
+						"/", // 首页
+						"/detail", // 详情页面
+					],
+
+					// 使用 JSDOM 渲染器
+					renderer: new JSDOMRenderer({
+						renderAfterDocumentEvent: "render-event",
+					}),
+				}),
+			)
+		}
 	},
 })

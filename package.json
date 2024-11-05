@@ -15,6 +15,7 @@
     "postcss": "^8.4.47",
     "postcss-html": "^1.7.0",
     "postcss-px2vp": "^1.1.4",
+    "prerender-spa-plugin": "^3.4.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.58.3",
     "rollup-plugin-smart-asset": "^2.1.2",
