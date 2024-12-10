@@ -84,3 +84,16 @@ export function postOrderApprove(data) {
 		data,
 	})
 }
+// 获取mycard信息
+export function getMycardPayments() {
+	return request({
+		url: "/pay/mc/payments",
+		method: "GET",
+		params: {
+			currency: "TWD",
+		},
+		headers: {
+			accept: "application/json",
+		},
+	})
+}

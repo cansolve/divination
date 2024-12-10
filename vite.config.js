@@ -145,6 +145,11 @@ export default defineConfig({
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/orderApprove/, "/orderApprove"),
 			},
+			"/pay": {
+				target: "https://www.pooobs.com",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/pay/, "/pay"),
+			},
 		},
 	},
 	configureWebpack: (config) => {

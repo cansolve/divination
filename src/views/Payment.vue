@@ -56,6 +56,14 @@
 						checked-color="#d51e00"
 						><i class="pay-radio-icon"></i
 					></van-checkbox>
+					<van-checkbox
+						v-model="checked"
+						label-position="left"
+						checked-color="#d51e00"
+						><i class="pay-mycard-icon">{{
+							mycardData.PaymentTypeDesc
+						}}</i></van-checkbox
+					>
 				</div>
 			</div>
 			<div class="email__wrap">
@@ -93,7 +101,7 @@
 	import FootWidget from "@/components/FootWidget.vue"
 
 	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
-	import { postTrackInfo } from "@/services/index"
+	import { postTrackInfo, getMycardPayments } from "@/services/index"
 
 	import { useDataStore } from "@/stores/dataStore"
 	import { useRoute, useRouter } from "vue-router"
@@ -116,7 +124,6 @@
 			const countdownEnded = ref(false)
 
 			const trackStore = useDataStore()
-			console.log(trackStore.rawFormData.destinyType)
 			// 格式化时间为 mm:ss:ms
 			const formattedTime = computed(() => {
 				const totalMilliseconds = countdownTime.value
@@ -220,6 +227,26 @@
 			}
 			onMounted(async () => {
 				startCountdown()
+				try {
+					// 调用接口获取数据
+					const cardData = await getMycardPayments()
+
+					// 检查返回状态码是否为 200
+					if (cardData && cardData.code === 200) {
+						// 确保数据存在且长度足够
+						if (cardData.data && cardData.data.length > 2) {
+							let mycardData = cardData.data[2]
+							console.log("MyCard data:", mycardData)
+						} else {
+							console.warn("Data does not contain enough items:", cardData.data)
+						}
+					} else {
+						console.error("Failed to fetch card data. Code:", cardData.code)
+					}
+				} catch (error) {
+					console.error("Error fetching card data:", error)
+				}
+
 				if (!trackStore.hasPostedTrackInfo2) {
 					try {
 						trackStore.setTrackData({
