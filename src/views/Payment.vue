@@ -50,20 +50,22 @@
 				</div>
 				<van-divider>支付方式</van-divider>
 				<div class="pay-radio__box">
-					<van-checkbox
-						v-model="checked"
-						label-position="left"
-						checked-color="#d51e00"
-						><i class="pay-radio-icon"></i
-					></van-checkbox>
-					<van-checkbox
-						v-model="checked"
-						label-position="left"
-						checked-color="#d51e00"
-						><i class="pay-mycard-icon">{{
-							mycardData.PaymentTypeDesc
-						}}</i></van-checkbox
-					>
+					<van-radio-group v-model="selectedPaymentType">
+						<van-radio
+							name="PayPal"
+							label-position="left"
+							checked-color="#d51e00"
+						>
+							<i class="pay-radio-icon"></i>
+						</van-radio>
+						<van-radio
+							name="MyCard"
+							label-position="left"
+							checked-color="#d51e00"
+						>
+							<b class="pay-mycard-icon">{{ mycardData?.PaymentTypeDesc }}</b>
+						</van-radio>
+					</van-radio-group>
 				</div>
 			</div>
 			<div class="email__wrap">
@@ -101,7 +103,11 @@
 	import FootWidget from "@/components/FootWidget.vue"
 
 	import { usePageEntryTime } from "@/utils/pageEntryTime" // 引入页面时间钩子函数
-	import { postTrackInfo, getMycardPayments } from "@/services/index"
+	import {
+		postTrackInfo,
+		getMycardPayments,
+		postMycardData,
+	} from "@/services/index"
 
 	import { useDataStore } from "@/stores/dataStore"
 	import { useRoute, useRouter } from "vue-router"
@@ -113,12 +119,13 @@
 		},
 		setup() {
 			const { entryTime } = usePageEntryTime()
-			const checked = ref(true)
 			const email = ref("")
 			const showPaypalDialog = ref(false)
-
+			const mycardData = ref(null) //mycard文案
 			const router = useRouter() // 获取 router 实例
 			const route = useRoute() // 获取当前路由信息
+
+			const selectedPaymentType = ref("") // 支付方式初始化为一个空字符串
 
 			const countdownTime = ref(10 * 60 * 1000) // 5分钟倒计时，初始值为5分钟的毫秒数
 			const countdownEnded = ref(false)
@@ -158,9 +165,8 @@
 				const domainPart = email.split("@")[1]
 				return emailPattern.test(email) && !/(\.\.)/.test(domainPart)
 			}
-
 			// 处理支付按钮点击
-			const handlePayButtonClick = () => {
+			const handlePayButtonClick = async () => {
 				if (!email.value) {
 					showDialog({ message: "請輸入郵箱地址！" })
 					return
@@ -169,18 +175,44 @@
 					showDialog({ message: "請輸入有效的郵箱地址！" })
 					return
 				}
+				if (!selectedPaymentType.value) {
+					showDialog({ message: "請選擇支付方式！" })
+					return
+				}
 				// 如果通过验证，执行下一步操作，例如跳转页面或提交数据
 				showConfirmDialog({
 					message: "請再次確認郵箱是否正確" + email.value,
 				})
 					.then(async () => {
-						trackStore.setEmail(email.value)
-						trackStore.setTrackData({
-							action: "action_pay",
-							email: email.value,
-						})
-						await postTrackInfo(trackStore.trackData)
-						showPaypalDialog.value = true
+						if (selectedPaymentType.value === "MyCard") {
+							try {
+								const response = await postMycardData({
+									uid: trackStore.trackData.uid,
+									email: email.value,
+									paymentType: mycardData.value.PaymentType,
+									itemCode: mycardData.value.Items[0].ItemCode,
+									amount: countdownEnded ? "12.21" : "19.21",
+									currency: mycardData.value.Items[0].Currency,
+								})
+								if (response && response.code === 200 && response.data) {
+									console.log("Redirecting to:", response.data)
+									window.location.href = response.data // 重定向到返回的链接
+								} else {
+									showDialog({ message: "支付失败，服务器返回数据异常！" })
+								}
+							} catch (error) {
+								console.error("提交 MyCard 支付接口失败：", error)
+								showDialog({ message: "支付失敗，請重試！" })
+							}
+						} else if (selectedPaymentType.value == "PayPal") {
+							trackStore.setEmail(email.value)
+							trackStore.setTrackData({
+								action: "action_pay",
+								email: email.value,
+							})
+							await postTrackInfo(trackStore.trackData)
+							showPaypalDialog.value = true
+						}
 					})
 					.catch(() => {
 						// on cancel
@@ -227,24 +259,21 @@
 			}
 			onMounted(async () => {
 				startCountdown()
-				try {
-					// 调用接口获取数据
-					const cardData = await getMycardPayments()
+				const cardData = await getMycardPayments()
 
-					// 检查返回状态码是否为 200
-					if (cardData && cardData.code === 200) {
-						// 确保数据存在且长度足够
-						if (cardData.data && cardData.data.length > 2) {
-							let mycardData = cardData.data[2]
-							console.log("MyCard data:", mycardData)
-						} else {
-							console.warn("Data does not contain enough items:", cardData.data)
-						}
+				try {
+					if (
+						cardData &&
+						cardData.code === 200 &&
+						cardData.data &&
+						cardData.data.length > 2
+					) {
+						mycardData.value = cardData.data[2]
 					} else {
-						console.error("Failed to fetch card data. Code:", cardData.code)
+						console.warn("Invalid data format:", cardData.data)
 					}
 				} catch (error) {
-					console.error("Error fetching card data:", error)
+					console.error("Error loading mycardData:", error)
 				}
 
 				if (!trackStore.hasPostedTrackInfo2) {
@@ -266,8 +295,9 @@
 			})
 
 			return {
-				checked,
+				selectedPaymentType,
 				email,
+				mycardData,
 				trackStore,
 				showPaypalDialog,
 				formattedTime,

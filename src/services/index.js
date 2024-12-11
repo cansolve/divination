@@ -97,3 +97,14 @@ export function getMycardPayments() {
 		},
 	})
 }
+// 提交mycard信息
+export function postMycardData(data) {
+	return request({
+		url: "/pay/mc/authcode",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		data,
+	})
+}
