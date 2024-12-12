@@ -60,6 +60,7 @@
 				</div>
 			</div>
 		</section>
+		<FootWidget />
 		<!-- <div class="foot__btn">
 			<div class="submit__btn" @click="handleNavigation">拆解我的姻緣問題</div>
 		</div> -->
@@ -80,6 +81,7 @@
 	import { useDataStore } from "@/stores/dataStore"
 
 	import InfoModule from "./Info.vue"
+	import FootWidget from "@/components/FootWidget.vue"
 
 	export default {
 		name: "HomePage",
@@ -87,6 +89,7 @@
 			Swiper,
 			SwiperSlide,
 			InfoModule,
+			FootWidget,
 		},
 		setup() {
 			const route = useRoute() // 获取当前路由信息
